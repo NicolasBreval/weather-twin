@@ -1,0 +1,25 @@
+services:
+  rabbitmq:
+    image: rabbitmq:${INFRA_RABBITMQ_VERSION}
+    hostname: rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672
+      - 1883:1883
+      - 8883:8883
+    environment:
+      RABBITMQ_DEFAULT_USER: ${INFRA_RABBITMQ_DEFAULT_USER}
+      RABBITMQ_DEFAULT_PASS: ${INFRA_RABBITMQ_DEFAULT_PASS}
+    volumes:
+      - ./infra/rabbitmq/enabled_plugins:/etc/rabbitmq/enabled_plugins:ro
+      - ./infra/rabbitmq/server-certs/server_key.pem:/etc/rabbitmq/certs/server_key.pem
+      - ./infra/rabbitmq/server-certs/server_certificate.pem:/etc/rabbitmq/certs/server_certificate.pem
+      - ./infra/rabbitmq/server-certs/ca_certificate.pem:/etc/rabbitmq/certs/ca_certificate.pem
+      - ./infra/rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
+      - ./infra/rabbitmq/entrypoint.sh:/usr/local/bin/entrypoint.sh
+    entrypoint: /usr/local/bin/entrypoint.sh
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "check_port_connectivity"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
