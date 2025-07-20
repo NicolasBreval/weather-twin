@@ -1,0 +1,55 @@
+version: 3.8
+
+tasks:
+  start-infra:
+    desc: "Starts all services declared on docker-compose file"
+    dir: .
+    cmds:
+      - docker-compose up -d
+    aliases: [istart]
+    
+
+  stop-infra:
+    desc: "Stops all services started by `start-infra` task"
+    dir: .
+    cmds:
+      - docker-compose stop
+    aliases: [istop]
+    
+  delete-infra:
+    desc: "Deletes all services started by `start-infra` task"
+    dir: .
+    cmds:
+      - docker-compose down -v
+    aliases: [idel]
+
+  create-rabbitmq-server-certs:
+    desc: "Creates all required certificates to apply TLS locally in RabbitMQ deployed by docker-compose"
+    dir: infra/rabbitmq/server-certs
+    cmds:
+      - openssl genrsa -out ca_key.pem 2048
+      - openssl req -x509 -new -nodes -key ca_key.pem -sha256 -days 3650 -out ca_certificate.pem -subj "/C=ES/ST=Andalusia/L=Seville/O=WeatherTwin/OU=WeatherTwinCA/CN=WeatherTwinCA"
+      - openssl genrsa -out server_key.pem 2048
+      - openssl req -new -key server_key.pem -out server_csr.pem -subj "/C=ES/ST=Andalusia/L=Seville/O=WeatherTwin/OU=RabbitMQ/CN=rabbitmq"
+      - openssl x509 -req -in server_csr.pem -CA ca_certificate.pem -CAkey ca_key.pem -CAcreateserial -out server_certificate.pem -days 365 -sha256
+      - rm server_csr.pem
+    aliases: [rmq-certs]
+
+  create-rabbitmq-client-certs:
+    desc: "Creates all required certificates to connect to secured RabbitMQ server from a client"
+    dir: infra/rabbitmq
+    vars:
+      DEVICE_NAME: '{{.DEVICE_NAME| default "device"}}'
+    cmds:
+      - echo {{.DEVICE_NAME}}
+      - |
+        if [ -z "{{.DEVICE_NAME}}" ]; then
+          echo "Error: DEVICE_NAME variable is required for this task" >&2
+          exit 1
+        fi
+      - mkdir -p ./client-certs/{{.DEVICE_NAME}}
+      - openssl genrsa -out ./client-certs/{{.DEVICE_NAME}}/client_key.pem 2048
+      - openssl req -new -key ./client-certs/{{.DEVICE_NAME}}/client_key.pem -out ./client-certs/{{.DEVICE_NAME}}/client_csr.pem -subj "/C=ES/ST=Andalusia/L=Seville/O=WeatherTwin/OU=WeatherTwinDevice/CN={{.DEVICE_NAME}}"
+      - openssl x509 -req -in ./client-certs/{{.DEVICE_NAME}}/client_csr.pem -CA ./server-certs/ca_certificate.pem -CAkey ./server-certs/ca_key.pem -CAcreateserial -out ./client-certs/{{.DEVICE_NAME}}/client_certificate.pem -days 365 -sha256
+      - rm ./client-certs/{{.DEVICE_NAME}}/client_csr.pem
+    aliases: [rmq-ccerts]
