@@ -20,11 +20,21 @@ import io.moquette.interception.AbstractInterceptHandler;
 import io.moquette.interception.InterceptHandler;
 import io.moquette.interception.messages.InterceptPublishMessage;
 
+/**
+ * An implementation of {@link SensorListenerPort} that listens for MQTT messages using an embedded MQTT broker.
+ * This listener listen for messages on topics with the format: {deviceId}/{sensorId}/{timestamp}
+ * and expects the payload to be a float representing the sensor measurement. Each message received is then
+ * converted into a {@link SensorNotification} and published as a Spring event.
+ * 
+ * To enable this listener, it is necessary to set the property `entrypoint.listener.type` to `mqtt`.
+ */
 @Component
 @ConditionalOnProperty(name = "entrypoint.listener.type", havingValue = "mqtt")
 public class MqttSensorListenerAdapter extends SensorListenerPort<InterceptPublishMessage> {
+    /** Logger object used to show log messages */
     private static final Logger LOGGER = LoggerFactory.getLogger(MqttSensorListenerAdapter.class);
     
+    /** MQTT broker instance used to listen for device messages */
     private final Server broker;
 
     public MqttSensorListenerAdapter(
@@ -79,6 +89,10 @@ public class MqttSensorListenerAdapter extends SensorListenerPort<InterceptPubli
         );
     }
 
+    /**
+     * Creates a cycle of message interceptors to handle MQTT events
+     * @return the message interceptor handler
+     */
     private InterceptHandler messageIntercepHandler() {
         return new AbstractInterceptHandler() {
 
