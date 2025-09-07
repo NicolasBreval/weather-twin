@@ -1,0 +1,7 @@
+spring.application.name: gateway
+
+entrypoint:
+  listener:
+    type: ${ENTRYPOINT_LISTENER_TYPE:mqtt} # Supported types: mqtt
+    mqtt:
+      port: ${ENTRYPOINT_LISTENER_MQTT_PORT:1883}
