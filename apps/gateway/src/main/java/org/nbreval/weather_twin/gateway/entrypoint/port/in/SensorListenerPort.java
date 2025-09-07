@@ -17,6 +17,10 @@ public abstract class SensorListenerPort<T> implements DisposableBean {
     /** Object used to publish Spring's events */
     protected final ApplicationEventPublisher eventPublisher;
 
+    /**
+     * Constructs a new {@link SensorListenerPort} with the specified event publisher.
+     * @param eventPublisher the application event publisher used to publish sensor notifications (injected by Spring)
+     */
     public SensorListenerPort(ApplicationEventPublisher eventPublisher) {
         this.eventPublisher = eventPublisher;
     }

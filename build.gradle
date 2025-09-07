@@ -1,0 +1,11 @@
+subprojects {
+    apply plugin: 'java'
+}
+
+task allJavadoc(type: Javadoc) {
+    source subprojects.collect { it.sourceSets.main.allJava }
+    destinationDir = file("$buildDir/docs/javadoc")
+    options.author = true
+    options.version = true
+    options.encoding = 'UTF-8'
+}

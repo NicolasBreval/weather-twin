@@ -37,6 +37,14 @@ public class MqttSensorListenerAdapter extends SensorListenerPort<InterceptPubli
     /** MQTT broker instance used to listen for device messages */
     private final Server broker;
 
+    /**
+     * Constructs a new {@link MqttSensorListenerAdapter} with the specified event publisher and configuration properties.
+     * 
+     * @param eventPublisher the application event publisher used to publish sensor notifications (injected by Spring)
+     * @param port the port on which the MQTT broker will listen for incoming connections
+     * @param persistencePath the file system path where the MQTT broker will store its persistent data; if null or blank, persistence is disabled
+     * @throws SensorListenerAdapterException if there is an error starting the MQTT broker
+     */
     public MqttSensorListenerAdapter(
         ApplicationEventPublisher eventPublisher,
         @Value("${entrypoint.listener.mqtt.port}") int port,

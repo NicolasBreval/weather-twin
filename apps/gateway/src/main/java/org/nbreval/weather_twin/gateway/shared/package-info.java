@@ -1,3 +1,7 @@
+
+/**
+ * Shared package for the gateway application.
+ */
 @org.springframework.modulith.ApplicationModule(
     displayName = "shared"
 )
