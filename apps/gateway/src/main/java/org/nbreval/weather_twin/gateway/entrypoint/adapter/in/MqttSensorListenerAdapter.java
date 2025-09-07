@@ -1,19 +1,16 @@
 package org.nbreval.weather_twin.gateway.entrypoint.adapter.in;
 
 import java.util.List;
-import java.util.Properties;
-
+import org.nbreval.weather_twin.gateway.entrypoint.adapter.in.config.MqttBrokerProperties;
 import org.nbreval.weather_twin.gateway.entrypoint.adapter.in.exception.SensorListenerAdapterException;
 import org.nbreval.weather_twin.gateway.entrypoint.port.in.SensorListenerPort;
 import org.nbreval.weather_twin.gateway.shared.SensorNotification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
-import io.moquette.BrokerConstants;
 import io.moquette.broker.Server;
 import io.moquette.broker.config.MemoryConfig;
 import io.moquette.interception.AbstractInterceptHandler;
@@ -47,19 +44,11 @@ public class MqttSensorListenerAdapter extends SensorListenerPort<InterceptPubli
      */
     public MqttSensorListenerAdapter(
         ApplicationEventPublisher eventPublisher,
-        @Value("${entrypoint.listener.mqtt.port}") int port,
-        @Value("${entrypoint.listener.mqtt.persistence-path:}") String persistencePath
+        MqttBrokerProperties brokerProperties
     ) {
         super(eventPublisher);
-        var configProps = new Properties();
-        configProps.put("port", Integer.toString(port));
-        configProps.put("host", "0.0.0.0");
 
-        if (persistencePath != null && !persistencePath.isBlank()) {
-            configProps.put(BrokerConstants.DEFAULT_PERSISTENT_PATH, persistencePath);
-        }
-
-        var config = new MemoryConfig(configProps);
+        var config = new MemoryConfig(brokerProperties.toBrokerProperties());
 
         this.broker = new Server();
         try {
