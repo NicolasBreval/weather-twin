@@ -1,11 +1,14 @@
-package org.nbreval.weather_twin.gateway;
+package org.nbreval.weather_twin.gateway.test;
 
 import java.nio.ByteBuffer;
+import java.nio.file.Paths;
 import java.time.Duration;
+import java.util.UUID;
 
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.nbreval.weather_twin.gateway.shared.SensorNotification;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,6 +16,7 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.event.EventListener;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
+import org.springframework.util.FileSystemUtils;
 
 import reactor.core.publisher.Sinks;
 import reactor.test.StepVerifier;
@@ -21,10 +25,17 @@ import reactor.test.StepVerifier;
 public class EntrypointMqttTests {
     
     private static final Sinks.Many<SensorNotification> sink = Sinks.many().unicast().onBackpressureBuffer();
+    private static final String MQTT_PERSISTENCE_PATH = "data/%s".formatted(UUID.randomUUID().toString());
 
     @DynamicPropertySource
     static void setupProperties(DynamicPropertyRegistry registry) {
         registry.add("entrypoint.listener.type", () -> "mqtt");
+        registry.add("entrypoint.listener.mqtt.persistence-path", () -> MQTT_PERSISTENCE_PATH);
+    }
+
+    @AfterAll
+    static void teardown() {
+        FileSystemUtils.deleteRecursively(Paths.get(MQTT_PERSISTENCE_PATH).toFile());
     }
 
     @TestConfiguration

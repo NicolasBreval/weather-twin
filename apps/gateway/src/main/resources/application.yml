@@ -5,3 +5,4 @@ entrypoint:
     type: ${ENTRYPOINT_LISTENER_TYPE:mqtt} # Supported types: mqtt
     mqtt:
       port: ${ENTRYPOINT_LISTENER_MQTT_PORT:1883}
+      persistence-path: ${ENTRYPOINT_LISTENER_MQTT_PERSISTENCE_PATH:}
