@@ -26,6 +26,7 @@ ext {
 	set('springModulithVersion', "1.4.1")
 	set('moquetteVersion', "0.18.0")
 	set('eclipsePahoVersion', "1.2.5")
+	set('mapDbVersion', "3.1.0")
 }
 
 configurations {
@@ -36,6 +37,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 	implementation 'org.springframework.modulith:spring-modulith-starter-core'
 	implementation "com.github.moquette-io.moquette:moquette-broker:${moquetteVersion}"
+	implementation "org.mapdb:mapdb:${mapDbVersion}"
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'io.projectreactor:reactor-test'

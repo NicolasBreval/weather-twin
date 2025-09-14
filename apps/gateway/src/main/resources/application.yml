@@ -8,3 +8,7 @@ entrypoint:
       persistence:
         enabled: ${ENTRYPOINT_LISTENER_MQTT_PERSISTENCE_ENABLED:true}
         path: ${ENTRYPOINT_LISTENER_MQTT_PERSISTENCE_PATH:}
+
+computing:
+  batching:
+    window-list: ${BATCHING_PERIODS:1m}

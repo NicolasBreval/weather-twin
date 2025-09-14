@@ -1,6 +1,8 @@
 package org.nbreval.weather_twin.gateway.entrypoint.port.in;
 
 import org.nbreval.weather_twin.gateway.shared.SensorNotification;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.context.ApplicationEventPublisher;
 
@@ -13,6 +15,7 @@ import org.springframework.context.ApplicationEventPublisher;
  * @param <T> The type of the input message that the listener will handle.
  */
 public abstract class SensorListenerPort<T> implements DisposableBean {
+    protected static final Logger LOGGER = LoggerFactory.getLogger(SensorListenerPort.class);
 
     /** Object used to publish Spring's events */
     protected final ApplicationEventPublisher eventPublisher;
@@ -39,6 +42,7 @@ public abstract class SensorListenerPort<T> implements DisposableBean {
      */
     protected void publishEvent(T inputMessage) {
         var notification = convert(inputMessage);
+        LOGGER.debug("Sending notification from '%s/%s/%d' with measure '%f'".formatted(notification.getDeviceId(), notification.getSensorId(), notification.getUtcTimestamp(), notification.getMeasure()));
         eventPublisher.publishEvent(notification);
     }
 }
