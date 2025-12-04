@@ -10,7 +10,6 @@ import org.mapdb.DBMaker;
 import org.mapdb.Serializer;
 import org.nbreval.weather_twin.gateway.computing.application.port.in.SensorComputingPort;
 import org.nbreval.weather_twin.gateway.computing.domain.model.Triple;
-import org.nbreval.weather_twin.gateway.computing.infrastructure.adapter.in.SensorComputingAdapter;
 import org.nbreval.weather_twin.gateway.shared.domain.model.MeanMeasureEvent;
 import org.nbreval.weather_twin.gateway.shared.domain.model.SensorNotification;
 import org.nbreval.weather_twin.gateway.shared.serialization.KryoSerializer;
@@ -32,7 +31,7 @@ import reactor.core.scheduler.Schedulers;
 public class SensorComputingService implements SensorComputingPort {
 
   /** Logger used to show some log lines in application terminal */
-  private static final Logger LOGGER = LoggerFactory.getLogger(SensorComputingAdapter.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(SensorComputingService.class);
 
   /** List of configured periods to compute means */
   private final List<Long> windowSizeList;
