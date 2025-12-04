@@ -1,0 +1,49 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"java.configuration.updateBuildConfiguration": "automatic",
+		"java.gradle.buildServer.enabled": "off",
+		"java.compile.nullAnalysis.mode": "automatic",
+		"[java]": {
+			"editor.tabSize": 2,
+			"editor.detectIndentation": false,
+			"editor.formatOnSave": true
+		},
+		"[html]": {
+			"editor.tabSize": 2,
+			"editor.detectIndentation": false,
+			"editor.formatOnSave": true
+		},
+		"[css]": {
+			"editor.tabSize": 2,
+			"editor.detectIndentation": false,
+			"editor.formatOnSave": true
+		},
+		"[javascript]": {
+			"editor.tabSize": 2,
+			"editor.detectIndentation": false,
+			"editor.formatOnSave": true
+		},
+		"[json]": {
+			"editor.tabSize": 2,
+			"editor.detectIndentation": false,
+			"editor.formatOnSave": true
+		},
+	},
+	"launch": {
+		"version": "0.2.0",
+		"configurations": [
+			{
+				"type": "java",
+				"name": "Launch GatewayApplication",
+				"request": "launch",
+				"mainClass": "org.nbreval.weather_twin.gateway.GatewayApplication",
+				"projectName": "gateway"
+			}
+		]
+	}
+}
