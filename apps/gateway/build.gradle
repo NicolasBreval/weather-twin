@@ -27,6 +27,7 @@ ext {
 	set('moquetteVersion', "0.18.0")
 	set('eclipsePahoVersion', "1.2.5")
 	set('mapDbVersion', "3.1.0")
+	set('kryoVersion', "5.6.2")
 }
 
 configurations {
@@ -38,6 +39,7 @@ dependencies {
 	implementation 'org.springframework.modulith:spring-modulith-starter-core'
 	implementation "com.github.moquette-io.moquette:moquette-broker:${moquetteVersion}"
 	implementation "org.mapdb:mapdb:${mapDbVersion}"
+	implementation "com.esotericsoftware:kryo:${kryoVersion}"
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'io.projectreactor:reactor-test'

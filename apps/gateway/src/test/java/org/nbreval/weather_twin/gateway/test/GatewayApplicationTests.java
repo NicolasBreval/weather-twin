@@ -1,5 +1,7 @@
 package org.nbreval.weather_twin.gateway.test;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import org.junit.jupiter.api.Test;
 import org.nbreval.weather_twin.gateway.GatewayApplication;
 import org.nbreval.weather_twin.gateway.test.config.DummySensorListener;
@@ -19,30 +21,33 @@ import com.tngtech.archunit.core.domain.JavaClass;
 @Import(DummySensorListener.class)
 class GatewayApplicationTests {
 
-	/**
-	 * Method used to configure Spring application without an application.yml file
-	 * 
-	 * @param registry Object to configure Spring's properties
-	 */
-	@DynamicPropertySource
-	static void setupProperties(DynamicPropertyRegistry registry) {
+  /**
+   * Method used to configure Spring application without an application.yml file
+   * 
+   * @param registry Object to configure Spring's properties
+   */
+  @DynamicPropertySource
+  static void setupProperties(DynamicPropertyRegistry registry) {
 
-		// Important, this test class desn't test the logic, so it's needed to don't
-		// start the MQTT server. The dummy listener type ensures the MQTT server is not
-		// started.
-		registry.add("entrypoint.listener.type", () -> "dummy");
+    // Important, this test class desn't test the logic, so it's needed to don't
+    // start the MQTT server. The dummy listener type ensures the MQTT server is not
+    // started.
+    registry.add("entrypoint.listener.type", () -> "dummy");
 
-	}
+  }
 
-	/**
-	 * Uses the Spring's ApplicationModules class to ensure the project has the
-	 * correct Modulith's structure. The test package is excluded because it's not
-	 * necessary
-	 */
-	@Test
-	void checkModules() {
-		ApplicationModules.of(GatewayApplication.class,
-				JavaClass.Predicates.resideInAPackage("org.nbreval.weather_twin.gateway.test.*")).verify();
-	}
+  /**
+   * Uses the Spring's ApplicationModules class to ensure the project has the
+   * correct Modulith's structure. The test package is excluded because it's not
+   * necessary
+   */
+  @Test
+  void checkModules() {
+    var predicates = JavaClass.Predicates.resideInAPackage("org.nbreval.weather_twin.gateway.test.*");
+
+    assertNotNull(predicates);
+
+    ApplicationModules.of(GatewayApplication.class, predicates).verify();
+  }
 
 }
