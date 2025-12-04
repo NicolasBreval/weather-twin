@@ -2,7 +2,6 @@ package org.nbreval.weather_twin.gateway.entrypoint.infrastructure.adapter.in;
 
 import java.util.List;
 
-import org.nbreval.weather_twin.gateway.entrypoint.application.port.in.SensorListenerPortService;
 import org.nbreval.weather_twin.gateway.entrypoint.infrastructure.config.MqttBrokerProperties;
 import org.nbreval.weather_twin.gateway.entrypoint.infrastructure.exception.SensorListenerAdapterException;
 import org.nbreval.weather_twin.gateway.shared.domain.model.SensorNotification;
@@ -19,7 +18,8 @@ import io.moquette.interception.InterceptHandler;
 import io.moquette.interception.messages.InterceptPublishMessage;
 
 /**
- * An implementation of {@link SensorListenerPortService} that listens for MQTT
+ * An implementation of {@link AbstractSensorListenerAdapter} that listens for
+ * MQTT
  * messages using an embedded MQTT broker.
  * This listener listen for messages on topics with the format:
  * {deviceId}/{sensorId}/{timestamp}
