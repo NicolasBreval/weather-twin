@@ -3,6 +3,9 @@ package org.nbreval.weather_twin.gateway.test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -19,8 +22,10 @@ public class AggregationsDBTests {
   static AggregationsDbPort aggregationsDB;
 
   @BeforeAll
-  static void setup() {
-    aggregationsDB = new AggregationsDbAdapter();
+  static void setup() throws IOException {
+    var tmpFolder = Files.createTempDirectory("test").toAbsolutePath().toString();
+
+    aggregationsDB = new AggregationsDbAdapter(Paths.get(tmpFolder, "aggregations").toAbsolutePath().toString());
   }
 
   @BeforeEach

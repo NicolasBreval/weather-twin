@@ -56,10 +56,10 @@ public class CoapTests {
   static void setup() throws IOException {
     var tmpFolder = Files.createTempDirectory("test").toAbsolutePath().toString();
 
-    expressionsDB = new ExpressionsDbAdapter(Paths.get(tmpFolder, "aggregations").toAbsolutePath().toString(),
+    expressionsDB = new ExpressionsDbAdapter(Paths.get(tmpFolder, "aggregators").toAbsolutePath().toString(),
         Paths.get(tmpFolder, "flushes").toAbsolutePath().toString());
 
-    aggregationsDB = new AggregationsDbAdapter();
+    aggregationsDB = new AggregationsDbAdapter(Paths.get(tmpFolder, "aggregations").toAbsolutePath().toString());
 
     wtalLogic = new WtalLogicService();
 

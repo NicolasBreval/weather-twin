@@ -39,7 +39,8 @@ public class DispatcherTests {
     var flushesLocation = Paths.get(tmpFolder.toAbsolutePath().toString(), "flushes").toString();
 
     expressionsDB = new ExpressionsDbAdapter(aggregatorsLocation, flushesLocation);
-    aggregationsDB = new AggregationsDbAdapter();
+    aggregationsDB = new AggregationsDbAdapter(
+        Paths.get(tmpFolder.toAbsolutePath().toString(), "aggregations").toString());
     wtalLogic = new WtalLogicService();
     measureProcessor = new MeasureProcessorAdapter(wtalLogic);
     dispatcher = new DispatcherService(expressionsDB, aggregationsDB, measureProcessor);

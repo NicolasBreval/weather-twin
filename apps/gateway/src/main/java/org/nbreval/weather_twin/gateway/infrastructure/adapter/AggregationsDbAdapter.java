@@ -32,9 +32,9 @@ public class AggregationsDbAdapter implements AggregationsDbPort {
    */
   private final DBMap<AggregationKey, Aggregation> db;
 
-  public AggregationsDbAdapter() {
+  public AggregationsDbAdapter(String aggregationsLocation) {
     db = new DBMap<>(DBMaker
-        .tempFileDB()
+        .fileDB(aggregationsLocation)
         .fileChannelEnable()
         .transactionEnable()
         .closeOnJvmShutdown()
