@@ -1,7 +1,6 @@
 package org.nbreval.weather_twin.gateway.infrastructure.config;
 
 import org.eclipse.californium.core.CoapServer;
-import org.eclipse.californium.core.network.CoapEndpoint;
 import org.nbreval.weather_twin.gateway.infrastructure.adapter.CoapAdapter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -23,8 +22,8 @@ public class CoapConfig {
    */
   @Bean(initMethod = "start", destroyMethod = "stop")
   public CoapServer coapServer(@Value("${coap.port}") int port, CoapAdapter coapAdapter) {
-    var coapServer = new CoapServer();
-    coapServer.addEndpoint(CoapEndpoint.builder().setPort(0).build());
+    var coapServer = new CoapServer(org.eclipse.californium.elements.config.Configuration.createStandardWithoutFile(),
+        port);
     coapServer.add(coapAdapter);
     return coapServer;
   }
