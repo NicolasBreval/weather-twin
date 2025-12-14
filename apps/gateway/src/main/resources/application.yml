@@ -5,11 +5,11 @@ coap:
 
 db:
   aggregators:
-    location: ${DB_CONFIG_LOCATION:./data/aggregators.db}
+    location: ${DB_AGGREGATORS_LOCATION:./data/aggregators.db}
   flushes:
     location: ${DB_FLUSHES_LOCATION:./data/flushes.db}
-  windows:
-    location: ${DB_WINDOWS_LOCATION:./data/windows.db}
+  aggregations:
+    location: ${DB_AGGREGATIONS_LOCATION:./data/aggregations.db}
 
 springdoc:
   swagger-ui:
