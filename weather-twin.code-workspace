@@ -5,7 +5,6 @@
 		}
 	],
 	"settings": {
-		"java.configuration.updateBuildConfiguration": "automatic",
 		"java.gradle.buildServer.enabled": "off",
 		"java.compile.nullAnalysis.mode": "automatic",
 		"[java]": {
@@ -33,6 +32,7 @@
 			"editor.detectIndentation": false,
 			"editor.formatOnSave": true
 		},
+		"java.configuration.updateBuildConfiguration": "interactive"
 	},
 	"launch": {
 		"version": "0.2.0",
@@ -42,7 +42,10 @@
 				"name": "Launch GatewayApplication",
 				"request": "launch",
 				"mainClass": "org.nbreval.weather_twin.gateway.GatewayApplication",
-				"projectName": "gateway"
+				"projectName": "gateway",
+				"env": {
+					"COAP_PORT": "5683"
+				}
 			}
 		]
 	}
