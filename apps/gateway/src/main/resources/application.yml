@@ -1,1 +1,22 @@
 spring.application.name: gateway
+
+coap:
+  port: ${COAP_PORT:5683}
+
+db:
+  aggregators:
+    location: ${DB_CONFIG_LOCATION:./data/aggregators.db}
+  flushes:
+    location: ${DB_FLUSHES_LOCATION:./data/flushes.db}
+  windows:
+    location: ${DB_WINDOWS_LOCATION:./data/windows.db}
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  api-docs:
+    path: /v3/api-docs
+  info:
+    title: Weather-Twin Gateway API definition
+    version: 0.0.1
+    description: API documentation to interact with Weather-Twin gateway.
