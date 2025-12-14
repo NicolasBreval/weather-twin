@@ -1,7 +1,9 @@
 package org.nbreval.weather_twin.gateway.domain.entity;
 
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -17,21 +19,29 @@ public class Json {
   private final Map<String, JsonValue<?>> values;
 
   public Json() {
-    values = Map.of();
+    values = Collections.unmodifiableMap(new LinkedHashMap<>());
   }
 
   @SuppressWarnings("unchecked")
   public Json(Map.Entry<String, ? extends Object>... values) {
-    this.values = Map.ofEntries(Arrays.stream(values)
-        .map(v -> v.getValue() instanceof JsonValue<?> ? v : Map.entry(v.getKey(), new JsonValue<>(v.getValue())))
-        .toArray(Map.Entry[]::new));
+    var linkedValues = new LinkedHashMap<String, JsonValue<?>>();
+
+    for (var entry : values) {
+      var value = entry.getValue();
+      linkedValues.put(entry.getKey(), value instanceof JsonValue<?> j ? j : new JsonValue<>(value));
+    }
+
+    this.values = Collections.unmodifiableMap(linkedValues);
   }
 
-  @SuppressWarnings("unchecked")
   public Json(Map<String, ? extends Object> values) {
-    this.values = Map.ofEntries(values.entrySet().stream()
-        .map(v -> v.getValue() instanceof JsonValue<?> ? v : Map.entry(v.getKey(), new JsonValue<>(v.getValue())))
-        .toArray(Map.Entry[]::new));
+    var linkedValues = new LinkedHashMap<String, JsonValue<?>>();
+
+    values.forEach((key, value) -> {
+      linkedValues.put(key, value instanceof JsonValue<?> j ? j : new JsonValue<>(value));
+    });
+
+    this.values = Collections.unmodifiableMap(linkedValues);
   }
 
   /**
@@ -42,7 +52,7 @@ public class Json {
    * @return A new JSON with same content as current and the new pair key-value.
    */
   public Json add(String key, Object value) {
-    var newMap = new HashMap<String, JsonValue<?>>();
+    var newMap = new LinkedHashMap<String, JsonValue<?>>();
     newMap.putAll(values);
     if (value instanceof JsonValue j) {
       newMap.put(key, j);
@@ -59,7 +69,7 @@ public class Json {
    * @return A new JSON with joined content of current and another JSON.
    */
   public Json concat(Json other) {
-    var newMap = new HashMap<String, JsonValue<?>>();
+    var newMap = new LinkedHashMap<String, JsonValue<?>>();
     newMap.putAll(values);
     newMap.putAll(other.values);
     return new Json(newMap);
@@ -83,6 +93,19 @@ public class Json {
    */
   public boolean contains(String key) {
     return values.containsKey(key);
+  }
+
+  /**
+   * Obtains each key-value pair from Json.
+   * 
+   * @return Each key-value pair in Json object, as a set.
+   */
+  public List<Map.Entry<String, Object>> entries() {
+    var entries = new ArrayList<Map.Entry<String, Object>>();
+
+    values.forEach((key, value) -> entries.add(Map.entry(key, value)));
+
+    return entries;
   }
 
   @Override
