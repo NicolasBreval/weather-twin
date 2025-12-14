@@ -91,7 +91,7 @@ public class JsonArray {
     var newList = new ArrayList<JsonValue<?>>();
 
     for (var i = fixedFrom; i < fixedTo; i++) {
-      newList.add(i > values.size() ? new JsonValue<>(null) : values.get(i));
+      newList.add(i > values.size() || i < 0 ? new JsonValue<>(null) : values.get(i));
     }
 
     return new JsonArray(newList);

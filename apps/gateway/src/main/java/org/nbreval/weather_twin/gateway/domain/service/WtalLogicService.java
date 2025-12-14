@@ -218,12 +218,12 @@ public class WtalLogicService implements WTALLogicPort {
 
   @Override
   public Object applyEquals(Object left, Object right) {
-    return left.equals(right);
+    return Objects.equals(left, right);
   }
 
   @Override
   public Object applyNotEquals(Object left, Object right) {
-    return !left.equals(right);
+    return !Objects.equals(left, right);
   }
 
   @Override
