@@ -31,7 +31,21 @@ public class InitializationConfig {
   @Bean
   public AggregationsDbPort aggregationsDB(
       @Value("${db.aggregations.location}") String aggregationsLocation) {
-    return new AggregationsDbAdapter(aggregationsLocation);
+    var aggregationsDB = new AggregationsDbAdapter(aggregationsLocation);
+
+    // Clean previous aggregations when bean is created
+    aggregationsDB.getAllAgregations().entrySet().forEach(e -> {
+      var interval = e.getKey();
+      e.getValue().entrySet().forEach(e1 -> {
+        var device = e1.getKey();
+        e1.getValue().entrySet().forEach(e2 -> {
+          var sensor = e2.getKey();
+          aggregationsDB.releaseAggregation(device, sensor, interval);
+        });
+      });
+    });
+
+    return aggregationsDB;
   }
 
   @Bean
@@ -54,6 +68,10 @@ public class InitializationConfig {
   public SchedulerPort scheduler(AggregationsDbPort aggregationsDB, ExpressionsDbPort expressionsDB,
       MeasureProcessorPort measureProcessor) {
     // TODO: Output connectors
-    return new SchedulerService(aggregationsDB, expressionsDB, measureProcessor, Set.of());
+    var scheduler = new SchedulerService(aggregationsDB, expressionsDB, measureProcessor, Set.of());
+
+    aggregationsDB.getAllIntervals().forEach(interval -> scheduler.schedule(interval));
+
+    return scheduler;
   }
 }
