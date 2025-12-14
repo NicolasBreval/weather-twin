@@ -138,7 +138,7 @@ public class JacksonCustomModule extends SimpleModule {
           }
         }
 
-        return new JsonArray(elements.toArray(new JsonValue<?>[0]));
+        return new JsonArray(elements.stream().toArray());
       }
 
       throw new IllegalArgumentException(
