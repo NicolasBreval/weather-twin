@@ -132,6 +132,10 @@ public class AggregatorWtalEvaluator extends AggregatorWtalBaseVisitor<Object> {
       return visit(ctx.json_array());
     }
 
+    if (ctx.NULL() != null) {
+      return null;
+    }
+
     if (ctx.IDENTIFIER() != null) {
       var varName = ctx.IDENTIFIER().getText();
       if (variableContext.containsKey(varName)) {

@@ -33,6 +33,7 @@ atom
     | IDENTIFIER
     | STRING
     | BOOLEAN
+    | NULL
     | json_object
     | json_array
     ;
@@ -114,6 +115,8 @@ STRING:
     '"' (~[\r\n"])* '"' ;
 
 BOOLEAN: 'true' | 'false' ;
+
+NULL: 'null' ;
 
 // Variables
 IDENTIFIER:
