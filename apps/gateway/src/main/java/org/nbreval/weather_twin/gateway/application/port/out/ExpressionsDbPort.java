@@ -79,4 +79,9 @@ public interface ExpressionsDbPort {
    * @return Expression removed.
    */
   String removeFlushExpression(String device, String sensor);
+
+  /**
+   * Closes the database
+   */
+  void close();
 }

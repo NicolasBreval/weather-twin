@@ -121,4 +121,9 @@ public interface AggregationsDbPort {
    * @return The aggregation related to specified device, sensor and interval.
    */
   Aggregation getAggregation(String device, String sensor, long interval);
+
+  /**
+   * Closes the database completely
+   */
+  void close();
 }

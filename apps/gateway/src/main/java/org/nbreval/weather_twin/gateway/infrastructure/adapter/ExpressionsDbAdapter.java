@@ -101,6 +101,12 @@ public class ExpressionsDbAdapter implements ExpressionsDbPort {
     return removed;
   }
 
+  @Override
+  public void close() {
+    aggregatorsDB.close();
+    flushesDB.close();
+  }
+
   private DB createLocalDB(String location) {
     return DBMaker
         .fileDB(location)

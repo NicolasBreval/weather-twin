@@ -119,4 +119,9 @@ public class AggregationsDbAdapter implements AggregationsDbPort {
   public Aggregation getAggregation(String device, String sensor, long interval) {
     return db.get(new AggregationKey(device, sensor, interval));
   }
+
+  @Override
+  public void close() {
+    db.close();
+  }
 }

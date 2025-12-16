@@ -28,7 +28,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class InitializationConfig {
 
-  @Bean
+  @Bean(destroyMethod = "close")
   public ExpressionsDbPort expressionsDB(
       @Value("${db.aggregators.location}") String aggregatorsLocation,
       @Value("${db.flushes.location}") String flushesLocation) {
@@ -57,7 +57,7 @@ public class InitializationConfig {
     return new ExpressionsDbAdapter(aggregatorsLocation, flushesLocation);
   }
 
-  @Bean
+  @Bean(destroyMethod = "close")
   public AggregationsDbPort aggregationsDB(
       @Value("${db.aggregations.location}") String aggregationsLocation) {
 

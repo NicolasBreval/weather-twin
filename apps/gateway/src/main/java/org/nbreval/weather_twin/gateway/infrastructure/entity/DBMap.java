@@ -96,4 +96,11 @@ public class DBMap<K, V> implements Map<K, V> {
     return internalMap.entrySet();
   }
 
+  /**
+   * Closes the database
+   */
+  public void close() {
+    this.db.close();
+  }
+
 }
