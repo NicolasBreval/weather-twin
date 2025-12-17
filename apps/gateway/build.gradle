@@ -26,7 +26,7 @@ ext {
 	set('kryoVersion', "5.6.2")
 	set('eclipseCaliforniumVersion', "3.14.0")
 	set('antlrVersion', "4.13.2")
-	set('openApiVersion', "1.8.0")
+	set('springdocVersion', "3.0.0")
 }
 
 configurations {
@@ -37,10 +37,11 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation "org.mapdb:mapdb:${mapDbVersion}"
 	implementation "com.esotericsoftware:kryo:${kryoVersion}"
 	implementation "org.eclipse.californium:californium-core:${eclipseCaliforniumVersion}"
-	implementation "org.springdoc:springdoc-openapi-webflux-ui:${openApiVersion}"
+	implementation "org.springdoc:springdoc-openapi-starter-webflux-ui:${springdocVersion}"
 	antlr "org.antlr:antlr4:${antlrVersion}"
 	implementation "org.antlr:antlr4-runtime:${antlrVersion}"
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
