@@ -20,3 +20,9 @@ springdoc:
     title: Weather-Twin Gateway API definition
     version: 0.0.1
     description: API documentation to interact with Weather-Twin gateway.
+
+management.endpoints.web.exposure.include: "*"
+
+spring.thymeleaf:
+  excluded-view-names: actuator/*
+  reactive.max-chunk-size: 1024
