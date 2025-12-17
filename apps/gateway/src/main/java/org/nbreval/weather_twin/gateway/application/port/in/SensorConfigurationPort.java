@@ -1,8 +1,10 @@
 package org.nbreval.weather_twin.gateway.application.port.in;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import org.nbreval.weather_twin.gateway.application.entity.SensorRegistration;
 import org.nbreval.weather_twin.gateway.infrastructure.enumeration.DataType;
 
 import reactor.util.function.Tuple2;
@@ -94,4 +96,12 @@ public interface SensorConfigurationPort {
    *         schedulers for them.
    */
   Tuple2<List<Long>, List<Long>> updateIntervals(String device, String sensor, Set<Long> intervals);
+
+  /**
+   * Obtains all aggregations stored on system.
+   * 
+   * @return All aggregations stored on system grouped by interval, device and
+   *         sensor
+   */
+  Collection<SensorRegistration> getAllRegistrations();
 }

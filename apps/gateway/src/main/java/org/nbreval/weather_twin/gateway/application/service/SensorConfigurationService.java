@@ -1,9 +1,13 @@
 package org.nbreval.weather_twin.gateway.application.service;
 
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import org.nbreval.weather_twin.gateway.application.entity.SensorRegistration;
 import org.nbreval.weather_twin.gateway.application.port.in.SensorConfigurationPort;
 import org.nbreval.weather_twin.gateway.application.port.out.AggregationsDbPort;
 import org.nbreval.weather_twin.gateway.application.port.out.ExpressionsDbPort;
@@ -57,7 +61,7 @@ public class SensorConfigurationService implements SensorConfigurationPort {
 
     var defaultValueObj = dataType.getFormattedValue(defaultValue.getBytes());
     intervals.forEach(interval -> aggregationsDB.registerAggregation(device,
-        sensor, interval, defaultValueObj));
+        sensor, interval, dataType, defaultValueObj));
 
     aggregationsDB.applyChanges();
 
@@ -71,7 +75,7 @@ public class SensorConfigurationService implements SensorConfigurationPort {
 
     // Release all aggregations
     var removed = aggregationsDB.getAggregations(device, sensor);
-    removed.keySet().forEach(interval -> aggregationsDB.removeAggregation(device, sensor, interval));
+    removed.keySet().forEach(interval -> aggregationsDB.unregisterAggregation(device, sensor, interval));
 
     // Remove expressions
     expressionsDB.removeAggregatorExpression(device, sensor);
@@ -89,7 +93,7 @@ public class SensorConfigurationService implements SensorConfigurationPort {
       throw new NotExistsException("Doesn't exists any registration for '%s.%s'".formatted(device, sensor));
 
     // Unregister aggregations
-    aggregationsDB.removeAggregation(device, sensor, interval);
+    aggregationsDB.unregisterAggregation(device, sensor, interval);
 
     // If there are no more registrations for same device and sensor,
     var rest = aggregationsDB.getAggregations(device, sensor);
@@ -136,7 +140,8 @@ public class SensorConfigurationService implements SensorConfigurationPort {
 
     // Add new intervals
     intervalsToAdd
-        .forEach(interval -> aggregationsDB.registerAggregation(device, sensor, interval, storedDefaultValue.value()));
+        .forEach(interval -> aggregationsDB.registerAggregation(device, sensor, interval, storedDefaultValue.dataType(),
+            storedDefaultValue.value()));
 
     aggregationsDB.applyChanges();
 
@@ -146,6 +151,32 @@ public class SensorConfigurationService implements SensorConfigurationPort {
         .toList();
 
     return Tuples.of(intervalsToUnschedule, intervalsToSchedule);
+  }
+
+  @Override
+  public Collection<SensorRegistration> getAllRegistrations() {
+    var byDeviceAndSensor = new HashMap<Tuple2<String, String>, SensorRegistration>();
+
+    aggregationsDB.getAllAgregations()
+        .forEach((interval, byDevice) -> byDevice.forEach((device, bySensor) -> bySensor.forEach((sensor, agg) -> {
+          byDeviceAndSensor
+              .compute(Tuples.of(device, sensor), (k, v) -> {
+                if (v == null) {
+                  var aggExpression = expressionsDB.getAggregatorExpression(device, sensor);
+                  var flushExpression = expressionsDB.getFlushExpression(device, sensor);
+
+                  return new SensorRegistration(device, sensor, aggExpression, flushExpression, agg.dataType(),
+                      agg.defaultValue().toString(), Set.of(interval));
+                } else {
+                  return new SensorRegistration(v.device(), v.sensor(), v.aggregationExpression(), v.flushExpression(),
+                      v.dataType(),
+                      v.defaultValue(), Stream.concat(v.intervals().stream(), Stream.of(interval))
+                          .collect(Collectors.toUnmodifiableSet()));
+                }
+              });
+        })));
+
+    return byDeviceAndSensor.values();
   }
 
 }

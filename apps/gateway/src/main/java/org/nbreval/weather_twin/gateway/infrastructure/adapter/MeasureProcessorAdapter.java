@@ -4,10 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.nbreval.weather_twin.gateway.application.entity.Aggregation;
 import org.nbreval.weather_twin.gateway.application.port.in.WTALLogicPort;
 import org.nbreval.weather_twin.gateway.application.port.out.MeasureProcessorPort;
-import org.nbreval.weather_twin.gateway.infrastructure.entity.Aggregation;
 import org.nbreval.weather_twin.gateway.infrastructure.util.AggregatorWtalEvaluator;
+
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 

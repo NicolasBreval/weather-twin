@@ -5,12 +5,13 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.mapdb.DBMaker;
+import org.nbreval.weather_twin.gateway.application.entity.Aggregation;
 import org.nbreval.weather_twin.gateway.application.port.out.AggregationsDbPort;
 import org.nbreval.weather_twin.gateway.domain.entity.Json;
 import org.nbreval.weather_twin.gateway.domain.entity.JsonArray;
 import org.nbreval.weather_twin.gateway.domain.entity.JsonValue;
 import org.nbreval.weather_twin.gateway.infrastructure.entity.DBMap;
-import org.nbreval.weather_twin.gateway.infrastructure.entity.Aggregation;
+import org.nbreval.weather_twin.gateway.infrastructure.enumeration.DataType;
 import org.nbreval.weather_twin.gateway.infrastructure.entity.AggregationKey;
 import org.nbreval.weather_twin.gateway.infrastructure.serializer.KryoSerializer;
 
@@ -42,31 +43,26 @@ public class AggregationsDbAdapter implements AggregationsDbPort {
         .allocateIncrement(1024)
         .make(), "aggregations", new KryoSerializer<>(AggregationKey.class),
         new KryoSerializer<>(Aggregation.class, Float.class, Integer.class, Boolean.class, Json.class,
-            JsonArray.class, JsonValue.class, String.class));
+            JsonArray.class, JsonValue.class, String.class, DataType.class));
   }
 
   @Override
-  public void registerAggregation(String device, String sensor, long interval, Object defaultValue) {
+  public void registerAggregation(String device, String sensor, long interval, DataType dataType, Object defaultValue) {
     var key = new AggregationKey(device, sensor, interval);
-    db.computeIfAbsent(key, _ -> new Aggregation(defaultValue, defaultValue, 1));
+    db.computeIfAbsent(key, _ -> new Aggregation(dataType, defaultValue, defaultValue, 1));
   }
 
   @Override
   public void updateAggregation(String device, String sensor, long interval, Object aggregation) {
     var key = new AggregationKey(device, sensor, interval);
-    db.computeIfPresent(key, (k, v) -> new Aggregation(aggregation, v.defaultValue(), v.steps() + 1));
+    db.computeIfPresent(key, (k, v) -> new Aggregation(v.dataType(), aggregation, v.defaultValue(), v.steps() + 1));
   }
 
   @Override
   public Aggregation releaseAggregation(String device, String sensor, long interval) {
     var key = new AggregationKey(device, sensor, interval);
-    return db.computeIfPresent(key, (k, v) -> new Aggregation(v.defaultValue(), v.defaultValue(), v.steps() + 1));
-  }
-
-  @Override
-  public Aggregation removeAggregation(String device, String sensor, long interval) {
-    var key = new AggregationKey(device, sensor, interval);
-    return db.remove(key);
+    return db.compute(key,
+        (k, v) -> new Aggregation(v.dataType(), v.defaultValue(), v.defaultValue(), 1));
   }
 
   @Override
@@ -93,7 +89,7 @@ public class AggregationsDbAdapter implements AggregationsDbPort {
         .collect(Collectors.groupingBy(e -> e.getKey().interval(),
             Collectors.groupingBy(e -> e.getKey().device(),
                 Collectors.groupingBy(e -> e.getKey().sensor(),
-                    Collectors.reducing(null, e -> e.getValue(), (a, b) -> a)))));
+                    Collectors.reducing(null, e -> e.getValue(), (a, b) -> b)))));
   }
 
   @Override

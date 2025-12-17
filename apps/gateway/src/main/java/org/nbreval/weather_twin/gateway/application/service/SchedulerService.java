@@ -11,6 +11,8 @@ import org.nbreval.weather_twin.gateway.application.port.out.AggregationsDbPort;
 import org.nbreval.weather_twin.gateway.application.port.out.ExpressionsDbPort;
 import org.nbreval.weather_twin.gateway.application.port.out.MeasureProcessorPort;
 import org.nbreval.weather_twin.gateway.application.port.out.OutputConnectorPort;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
@@ -21,6 +23,11 @@ import reactor.util.function.Tuples;
  * Implements a {@link SchedulerPort}.
  */
 public class SchedulerService implements SchedulerPort {
+
+  /**
+   * Logger object to show some messages of application
+   */
+  private static final Logger logger = LoggerFactory.getLogger(SchedulerService.class);
 
   /**
    * List of enabled scheduled tasks.
@@ -83,6 +90,7 @@ public class SchedulerService implements SchedulerPort {
           aggregationsDB.applyChanges();
           outputs.forEach(output -> output.sendFlush(device, sensor, interval, result));
         })
+        .doOnError(e -> logger.error("Error during aggregation flush", e))
         .subscribe());
   }
 

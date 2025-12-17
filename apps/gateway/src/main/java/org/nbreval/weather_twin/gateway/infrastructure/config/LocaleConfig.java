@@ -51,12 +51,6 @@ public class LocaleConfig {
   public WebFilter localeChangeFilter(LocaleContextResolver localeResolver, MessageSource messageSource) {
     return (exchange, chain) -> {
       LocaleContext localeContext = localeResolver.resolveLocaleContext(exchange);
-
-      var locale = localeContext.getLocale();
-      String mensajePrueba = messageSource.getMessage("site.header.title", null, "NO ENCONTRADO", locale);
-      System.out.println("Idioma detectado: " + locale);
-      System.out.println("Mensaje resuelto: " + mensajePrueba);
-
       return chain.filter(exchange)
           .contextWrite(Context.of(LocaleContext.class, localeContext));
     };

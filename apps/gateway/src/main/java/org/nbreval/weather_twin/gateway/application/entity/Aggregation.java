@@ -1,7 +1,8 @@
-package org.nbreval.weather_twin.gateway.infrastructure.entity;
+package org.nbreval.weather_twin.gateway.application.entity;
 
 import org.nbreval.weather_twin.gateway.domain.entity.Json;
 import org.nbreval.weather_twin.gateway.domain.entity.JsonArray;
+import org.nbreval.weather_twin.gateway.infrastructure.enumeration.DataType;
 
 /**
  * Represenst the result of aggregate multiple measures received for a specified
@@ -13,10 +14,11 @@ import org.nbreval.weather_twin.gateway.domain.entity.JsonArray;
  *                     initial default value counts as step.
  */
 public record Aggregation(
+    DataType dataType,
     Object value,
     Object defaultValue,
     int steps) {
-  public Aggregation(Object value, Object defaultValue, int steps) {
+  public Aggregation(DataType dataType, Object value, Object defaultValue, int steps) {
     if (value != null
         && !(value instanceof Float || value instanceof Integer || value instanceof Boolean || value instanceof String
             || value instanceof Json || value instanceof JsonArray)) {
@@ -32,6 +34,7 @@ public record Aggregation(
       throw new IllegalArgumentException("Invalid number of steps, it must be greater than zero");
     }
 
+    this.dataType = dataType;
     this.value = value;
     this.defaultValue = defaultValue;
     this.steps = steps;

@@ -3,7 +3,8 @@ package org.nbreval.weather_twin.gateway.application.port.out;
 import java.util.Map;
 import java.util.Set;
 
-import org.nbreval.weather_twin.gateway.infrastructure.entity.Aggregation;
+import org.nbreval.weather_twin.gateway.application.entity.Aggregation;
+import org.nbreval.weather_twin.gateway.infrastructure.enumeration.DataType;
 
 /**
  * Defines the entity which interacts with a MapDB database to store the
@@ -21,9 +22,11 @@ public interface AggregationsDbPort {
    * @param device       Device related to measure's aggregation.
    * @param sensor       Sensor related to measure's aggregation.
    * @param interval     Interval related to aggregation.
+   * @param dataType     Expected data type of measures received by this
+   *                     aggregation
    * @param defaultValue Default value to store when an aggregation is released.
    */
-  void registerAggregation(String device, String sensor, long interval, Object defaultValue);
+  void registerAggregation(String device, String sensor, long interval, DataType dataType, Object defaultValue);
 
   /**
    * Sets the value of already registered aggregation.
@@ -44,16 +47,6 @@ public interface AggregationsDbPort {
    * @return Aggregation released.
    */
   Aggregation releaseAggregation(String device, String sensor, long interval);
-
-  /**
-   * Removes completely an aggregation from database
-   * 
-   * @param device   Device related to aggregation to remove.
-   * @param sensor   Sensor related to aggregation to remove.
-   * @param interval Interval related to aggregation to remove.
-   * @return Aggregation removed.
-   */
-  Aggregation removeAggregation(String device, String sensor, long interval);
 
   /**
    * Removes an aggregation from database.

@@ -2,7 +2,7 @@ package org.nbreval.weather_twin.gateway.application.port.out;
 
 import java.util.Map;
 
-import org.nbreval.weather_twin.gateway.infrastructure.entity.Aggregation;
+import org.nbreval.weather_twin.gateway.application.entity.Aggregation;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;

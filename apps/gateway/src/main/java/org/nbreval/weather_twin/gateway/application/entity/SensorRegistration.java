@@ -1,4 +1,4 @@
-package org.nbreval.weather_twin.gateway.infrastructure.dto;
+package org.nbreval.weather_twin.gateway.application.entity;
 
 import java.util.Set;
 
@@ -27,7 +27,7 @@ import jakarta.validation.constraints.NotNull;
  *                              Each interval registers a different aggregation
  *                              to bw managed by different schedulers.
  */
-public record SensorRegistrationDto(
+public record SensorRegistration(
     @NotBlank(message = "The device is mandatory, it must be not null or empty") String device,
     @NotBlank(message = "The sensor is mandatory, it must be not null or empty") String sensor,
     @NotBlank(message = "The aggregatorExpression is mandatory, it must be not null or empty") String aggregationExpression,
