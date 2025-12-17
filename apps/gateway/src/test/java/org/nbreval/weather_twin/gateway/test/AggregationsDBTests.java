@@ -12,10 +12,13 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.nbreval.weather_twin.gateway.application.entity.Aggregation;
 import org.nbreval.weather_twin.gateway.application.port.out.AggregationsDbPort;
 import org.nbreval.weather_twin.gateway.infrastructure.adapter.AggregationsDbAdapter;
-import org.nbreval.weather_twin.gateway.infrastructure.entity.Aggregation;
 import org.nbreval.weather_twin.gateway.infrastructure.entity.AggregationKey;
+import org.nbreval.weather_twin.gateway.infrastructure.enumeration.DataType;
+
+import io.swagger.v3.core.util.Json;
 
 public class AggregationsDBTests {
 
@@ -53,7 +56,7 @@ public class AggregationsDBTests {
 
     assertTrue(stored.isEmpty());
 
-    aggregationsDB.registerAggregation(device, sensor, interval, 0);
+    aggregationsDB.registerAggregation(device, sensor, interval, DataType.INTEGER, 0);
 
     var byInterval = aggregationsDB.getAggregations(device, sensor);
 
@@ -63,7 +66,7 @@ public class AggregationsDBTests {
 
     byInterval = aggregationsDB.getAggregations(device, sensor);
 
-    assertEquals(new Aggregation(10, 0, 2), byInterval.get(interval));
+    assertEquals(new Aggregation(DataType.INTEGER, 10, 0, 2), byInterval.get(interval));
 
     aggregationsDB.unregisterAggregation(device, sensor, interval);
 
@@ -81,7 +84,8 @@ public class AggregationsDBTests {
         new AggregationKey("deviceB", "sensorA", 10000), true,
         new AggregationKey("deviceB", "sensorB", 10000), 0f);
 
-    testCases.forEach((k, v) -> aggregationsDB.registerAggregation(k.device(), k.sensor(), k.interval(), v));
+    testCases.forEach(
+        (k, v) -> aggregationsDB.registerAggregation(k.device(), k.sensor(), k.interval(), getDataTypeFromValue(v), v));
 
     var stored = aggregationsDB.getAllAgregations();
 
@@ -90,7 +94,23 @@ public class AggregationsDBTests {
 
     testCases
         .forEach((k, v) -> assertEquals(aggregationsDB.getAggregations(k.device(), k.sensor()).get(k.interval()),
-            new Aggregation(v, v, 1)));
+            new Aggregation(getDataTypeFromValue(v), v, v, 1)));
   }
 
+  private DataType getDataTypeFromValue(Object value) {
+    if (value instanceof Integer) {
+      return DataType.INTEGER;
+    } else if (value instanceof Float) {
+      return DataType.FLOAT;
+    } else if (value instanceof String) {
+      return DataType.TEXT;
+    } else if (value instanceof Boolean) {
+      return DataType.BOOLEAN;
+    } else if (value instanceof Json) {
+      return DataType.JSON;
+    } else {
+      throw new IllegalArgumentException(
+          "Invalid input value of type '%s'".formatted(value.getClass().getSimpleName()));
+    }
+  }
 }

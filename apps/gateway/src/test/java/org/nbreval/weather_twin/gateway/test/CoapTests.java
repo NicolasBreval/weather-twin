@@ -19,6 +19,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.nbreval.weather_twin.gateway.application.entity.Aggregation;
 import org.nbreval.weather_twin.gateway.application.port.in.DispatcherPort;
 import org.nbreval.weather_twin.gateway.application.port.in.WTALLogicPort;
 import org.nbreval.weather_twin.gateway.application.port.out.AggregationsDbPort;
@@ -30,7 +31,7 @@ import org.nbreval.weather_twin.gateway.infrastructure.adapter.AggregationsDbAda
 import org.nbreval.weather_twin.gateway.infrastructure.adapter.CoapAdapter;
 import org.nbreval.weather_twin.gateway.infrastructure.adapter.ExpressionsDbAdapter;
 import org.nbreval.weather_twin.gateway.infrastructure.adapter.MeasureProcessorAdapter;
-import org.nbreval.weather_twin.gateway.infrastructure.entity.Aggregation;
+import org.nbreval.weather_twin.gateway.infrastructure.enumeration.DataType;
 
 public class CoapTests {
 
@@ -99,9 +100,9 @@ public class CoapTests {
   void shouldCompleteFlowSuccessfully() {
     // Register sensor with expression
     expressionsDB.setAggregatorExpression("device", "sensor", "curr + agg;");
-    aggregationsDB.registerAggregation("device", "sensor", 1000, (int) 0);
-    aggregationsDB.registerAggregation("device", "sensor", 5000, (int) 0);
-    aggregationsDB.registerAggregation("device", "sensor", 10000, (int) 0);
+    aggregationsDB.registerAggregation("device", "sensor", 1000, DataType.INTEGER, (int) 0);
+    aggregationsDB.registerAggregation("device", "sensor", 5000, DataType.INTEGER, (int) 0);
+    aggregationsDB.registerAggregation("device", "sensor", 10000, DataType.INTEGER, (int) 0);
 
     // Mock test request
     when(optionSet.getUriPathString()).thenReturn("measures/device/sensor");
@@ -114,9 +115,9 @@ public class CoapTests {
     verify(exchange, times(1)).respond(eq(ResponseCode.CREATED));
 
     // Check aggregation was successfull
-    assertEquals(new Aggregation(23, 0, 2), aggregationsDB.getAggregation("device", "sensor", 1000));
-    assertEquals(new Aggregation(23, 0, 2), aggregationsDB.getAggregation("device", "sensor", 5000));
-    assertEquals(new Aggregation(23, 0, 2), aggregationsDB.getAggregation("device", "sensor", 10000));
+    assertEquals(new Aggregation(DataType.INTEGER, 23, 0, 2), aggregationsDB.getAggregation("device", "sensor", 1000));
+    assertEquals(new Aggregation(DataType.INTEGER, 23, 0, 2), aggregationsDB.getAggregation("device", "sensor", 5000));
+    assertEquals(new Aggregation(DataType.INTEGER, 23, 0, 2), aggregationsDB.getAggregation("device", "sensor", 10000));
   }
 
   @Test
@@ -164,9 +165,9 @@ public class CoapTests {
   void shouldFailDueToProcessingError() {
     // Register sensor with expression
     expressionsDB.setAggregatorExpression("device", "sensor", "curr + agg");
-    aggregationsDB.registerAggregation("device", "sensor", 1000, (int) 0);
-    aggregationsDB.registerAggregation("device", "sensor", 5000, (int) 0);
-    aggregationsDB.registerAggregation("device", "sensor", 10000, (int) 0);
+    aggregationsDB.registerAggregation("device", "sensor", 1000, DataType.INTEGER, (int) 0);
+    aggregationsDB.registerAggregation("device", "sensor", 5000, DataType.INTEGER, (int) 0);
+    aggregationsDB.registerAggregation("device", "sensor", 10000, DataType.INTEGER, (int) 0);
 
     // Mock test request
     when(optionSet.getUriPathString()).thenReturn("measures/device/sensor");

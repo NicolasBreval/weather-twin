@@ -17,6 +17,7 @@ import org.nbreval.weather_twin.gateway.domain.service.WtalLogicService;
 import org.nbreval.weather_twin.gateway.infrastructure.adapter.AggregationsDbAdapter;
 import org.nbreval.weather_twin.gateway.infrastructure.adapter.ExpressionsDbAdapter;
 import org.nbreval.weather_twin.gateway.infrastructure.adapter.MeasureProcessorAdapter;
+import org.nbreval.weather_twin.gateway.infrastructure.enumeration.DataType;
 
 import reactor.test.StepVerifier;
 
@@ -78,9 +79,9 @@ public class DispatcherTests {
     expressionsDB.setAggregatorExpression(device, sensor, "agg + curr;");
 
     // Register aggregations
-    aggregationsDB.registerAggregation(device, sensor, 1000, 0);
-    aggregationsDB.registerAggregation(device, sensor, 5000, 0);
-    aggregationsDB.registerAggregation(device, sensor, 10000, 0);
+    aggregationsDB.registerAggregation(device, sensor, 1000, DataType.INTEGER, 0);
+    aggregationsDB.registerAggregation(device, sensor, 5000, DataType.INTEGER, 0);
+    aggregationsDB.registerAggregation(device, sensor, 10000, DataType.INTEGER, 0);
 
     // Send new value to aggregate
     var stepVerifier = StepVerifier.create(dispatcher.consume("device", "sensor", 1));
@@ -120,9 +121,9 @@ public class DispatcherTests {
     expressionsDB.setAggregatorExpression(device, sensor, "agg + curr;");
 
     // Register aggregations
-    aggregationsDB.registerAggregation(device, sensor, 1000, 0);
-    aggregationsDB.registerAggregation(device, sensor, 5000, 0);
-    aggregationsDB.registerAggregation(device, sensor, 10000, 0);
+    aggregationsDB.registerAggregation(device, sensor, 1000, DataType.INTEGER, 0);
+    aggregationsDB.registerAggregation(device, sensor, 5000, DataType.INTEGER, 0);
+    aggregationsDB.registerAggregation(device, sensor, 10000, DataType.INTEGER, 0);
 
     // Send new value to aggregate
     var stepVerifier = StepVerifier.create(dispatcher.consume("device", "sensor", 1.5f));
@@ -162,9 +163,9 @@ public class DispatcherTests {
     expressionsDB.setAggregatorExpression(device, sensor, "agg + curr;");
 
     // Register aggregations
-    aggregationsDB.registerAggregation(device, sensor, 1000, "");
-    aggregationsDB.registerAggregation(device, sensor, 5000, "");
-    aggregationsDB.registerAggregation(device, sensor, 10000, "");
+    aggregationsDB.registerAggregation(device, sensor, 1000, DataType.TEXT, "");
+    aggregationsDB.registerAggregation(device, sensor, 5000, DataType.TEXT, "");
+    aggregationsDB.registerAggregation(device, sensor, 10000, DataType.TEXT, "");
 
     // Send new value to aggregate
     var stepVerifier = StepVerifier.create(dispatcher.consume("device", "sensor", "ho"));
@@ -204,9 +205,9 @@ public class DispatcherTests {
     expressionsDB.setAggregatorExpression(device, sensor, "agg & curr;");
 
     // Register aggregations
-    aggregationsDB.registerAggregation(device, sensor, 1000, true);
-    aggregationsDB.registerAggregation(device, sensor, 5000, true);
-    aggregationsDB.registerAggregation(device, sensor, 10000, true);
+    aggregationsDB.registerAggregation(device, sensor, 1000, DataType.BOOLEAN, true);
+    aggregationsDB.registerAggregation(device, sensor, 5000, DataType.BOOLEAN, true);
+    aggregationsDB.registerAggregation(device, sensor, 10000, DataType.BOOLEAN, true);
 
     // Send new value to aggregate
     var stepVerifier = StepVerifier.create(dispatcher.consume("device", "sensor", true));

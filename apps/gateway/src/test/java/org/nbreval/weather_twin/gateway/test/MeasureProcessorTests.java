@@ -5,11 +5,12 @@ import java.util.HashMap;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.nbreval.weather_twin.gateway.application.entity.Aggregation;
 import org.nbreval.weather_twin.gateway.application.port.in.WTALLogicPort;
 import org.nbreval.weather_twin.gateway.application.port.out.MeasureProcessorPort;
 import org.nbreval.weather_twin.gateway.domain.service.WtalLogicService;
 import org.nbreval.weather_twin.gateway.infrastructure.adapter.MeasureProcessorAdapter;
-import org.nbreval.weather_twin.gateway.infrastructure.entity.Aggregation;
+import org.nbreval.weather_twin.gateway.infrastructure.enumeration.DataType;
 
 import reactor.test.StepVerifier;
 
@@ -30,9 +31,9 @@ public class MeasureProcessorTests {
     var sensor = "sensor";
 
     var aggregations = new HashMap<Long, Aggregation>();
-    aggregations.put(1000L, new Aggregation(0, 0, 1));
-    aggregations.put(5000L, new Aggregation(0, 0, 1));
-    aggregations.put(10000L, new Aggregation(0, 0, 1));
+    aggregations.put(1000L, new Aggregation(DataType.INTEGER, 0, 0, 1));
+    aggregations.put(5000L, new Aggregation(DataType.INTEGER, 0, 0, 1));
+    aggregations.put(10000L, new Aggregation(DataType.INTEGER, 0, 0, 1));
 
     var verifier = StepVerifier
         .create(measureProcessor.aggregateMeasure(device, sensor, 1, aggregations, "agg + curr;"));

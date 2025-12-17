@@ -25,6 +25,7 @@ import org.nbreval.weather_twin.gateway.domain.service.WtalLogicService;
 import org.nbreval.weather_twin.gateway.infrastructure.adapter.AggregationsDbAdapter;
 import org.nbreval.weather_twin.gateway.infrastructure.adapter.ExpressionsDbAdapter;
 import org.nbreval.weather_twin.gateway.infrastructure.adapter.MeasureProcessorAdapter;
+import org.nbreval.weather_twin.gateway.infrastructure.enumeration.DataType;
 
 public class SchedulerTests {
 
@@ -110,7 +111,7 @@ public class SchedulerTests {
     // Register sensor with expression
     expressionsDB.setAggregatorExpression("device", "sensor", "curr + agg;");
     expressionsDB.setFlushExpression("device", "sensor", "agg / (steps - 1);");
-    aggregationsDB.registerAggregation("device", "sensor", 1000, (int) 0);
+    aggregationsDB.registerAggregation("device", "sensor", 1000, DataType.INTEGER, (int) 0);
 
     var values = List.of(1, 2, 3, 4, 5);
     values.forEach(n -> dispatcher.consume("device", "sensor", n).blockLast());
