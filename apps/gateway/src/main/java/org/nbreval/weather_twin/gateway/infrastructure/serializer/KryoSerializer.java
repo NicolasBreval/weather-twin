@@ -9,6 +9,7 @@ import org.mapdb.Serializer;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
+import com.esotericsoftware.kryo.serializers.DefaultSerializers;
 
 /**
  * Custom serializer for MapDB using Kryo.
@@ -22,11 +23,16 @@ public class KryoSerializer<T> implements Serializer<T> {
    */
   final private Kryo kryo;
 
+  @SuppressWarnings("unchecked")
   public KryoSerializer(Class<T> clazz, Class<?>... classes) {
     this.kryo = new Kryo();
     this.kryo.register(clazz);
     for (var c : classes) {
-      this.kryo.register(c);
+      if (c.isEnum()) {
+        this.kryo.register(c, new DefaultSerializers.EnumSerializer((Class<? extends Enum<?>>) c));
+      } else {
+        this.kryo.register(c);
+      }
     }
   }
 
