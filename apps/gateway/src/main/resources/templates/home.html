@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title th:text="#{site.title}">Weather-Twin Gateway Admin Console</title>
+  <link rel="stylesheet" th:href="@{/css/tailwind.css}">
+  <script th:src="@{/js/theme.js}"></script>
+</head>
+
+<body class="h-screen">
+  <div class="navbar bg-base-100 hadow-sm">
+    <div class="flex-1">
+      <a class="btn btn-ghost text-xl" th:text="#{site.header.title}">Weather-Twin Gateway Admin Console</a>
+    </div>
+    <div class="flex-none">
+      <label class="swap swap-rotate">
+        <input id="theme-controller" type="checkbox" class="theme-controller" value="dark" />
+        <div th:replace="~{fragments/icons :: sun-icon('swap-off fill-current w-8 h-8')}"></div>
+        <div th:replace="~{fragments/icons :: moon-icon('swap-on fill-current w-8 h-8')}"></div>
+      </label>
+      <div class="dropdown dropdown-end">
+        <div tabindex="0" class="btn btn-sm btn-ghost gap-1 px-1.5">
+          <th:block th:switch="${#locale.language}">
+            <th:block th:case="'es'">
+              <div th:replace="~{fragments/flags :: es-flag('w-5 h-5')}"></div>
+            </th:block>
+            <th:block th:case="'en'">
+              <div th:replace="~{fragments/flags :: en-flag('w-5 h-5')}"></div>
+            </th:block>
+            <th:block th:case="*">
+              <div th:replace="~{fragments/flags :: en-flag('w-5 h-5')}"></div>
+            </th:block>
+          </th:block>
+          <div th:replace="~{fragments/icons :: chevron-down-icon('w-5 h-5')}"></div>
+        </div>
+        <ul tabindex="-1" class="menu dropdown-content bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
+          <li>
+            <a th:href="@{/lang/?lang=es}">
+              <div th:replace="~{fragments/flags :: es-flag('w-5 h-5')}"></div>
+              <span th:text="#{site.header.lang.es}"></span>
+            </a>
+          </li>
+          <li>
+            <a th:href="@{/lang/?lang=en}">
+              <div th:replace="~{fragments/flags :: en-flag('w-5 h-5')}"></div>
+              <span th:text="#{site.header.lang.en}"></span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</body>
+
+</html>
