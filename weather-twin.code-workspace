@@ -32,7 +32,13 @@
 			"editor.detectIndentation": false,
 			"editor.formatOnSave": true
 		},
-		"java.configuration.updateBuildConfiguration": "interactive"
+		"java.configuration.updateBuildConfiguration": "interactive",
+		"java.test.config": {
+			"vmArgs": [
+				"--add-opens", 
+				"java.base/java.util=ALL-UNNAMED"
+			]
+		}
 	},
 	"launch": {
 		"version": "0.2.0",
