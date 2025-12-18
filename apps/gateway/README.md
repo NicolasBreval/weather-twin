@@ -87,26 +87,36 @@ The diagram below explains how the Gateway's software elements are distributed a
 graph LR
     SM((Sensor Measure))
     MDB[(MapDB)]
+    WA(Web Application)
     U((User))
 
     subgraph INF["Infrastructure Layer"]
         ADA["AggregationsDbAdapter"]
         EDA["ExpressionsDbAdapter"]
+        SMDA["SensorMetadataDBAdapter"]
         CA["CoapAdapter"]
         MPA["MeasureProcessorAdapter"]
         SRA["SensorRegistrationAdapter"]
+        LA["LocaleAdapter"]
+        TA["TemplatesAdapter"]
 
         style ADA fill:#F21D1D,color:black;
         style EDA fill:#F21D1D,color:black;
+        style SMDA fill:#F21D1D,color:black;
         style CA fill:#F21D1D,color:black;
         style MPA fill:#F21D1D,color:black;
         style SRA fill:#F21D1D,color:black;
+        style LA fill:#F21D1D,color:black;
+        style TA fill:#F21D1D,color:black;
 
-        click ADA "src/main/java/org/nbreval/weather_twin/gateway/infrastructure/adapter/AggregationsDbAdapter.java" "Open source code"
-        click EDA "apps/gateway/src/main/java/org/nbreval/weather_twin/gateway/infrastructure/adapter/ExpressionsDbAdapter.java" "Open source code"
-        click CA "apps/gateway/src/main/java/org/nbreval/weather_twin/gateway/infrastructure/adapter/CoapAdapter.java" "Open source code"
-        click MPA "apps/gateway/src/main/java/org/nbreval/weather_twin/gateway/infrastructure/adapter/MeasureProcessorAdapter.java" "Open source code"
-        click SRA "apps/gateway/src/main/java/org/nbreval/weather_twin/gateway/infrastructure/adapter/SensorRegistrationAdapter.java" "Open source code"
+        click ADA "./src/main/java/org/nbreval/weather_twin/gateway/infrastructure/adapter/AggregationsDbAdapter.java" "Open source code"
+        click EDA "./src/main/java/org/nbreval/weather_twin/gateway/infrastructure/adapter/ExpressionsDbAdapter.java" "Open source code"
+        click SMDA "./src/main/java/org/nbreval/weather_twin/gateway/infrastructure/adapter/SensorMetadataDbAdapter.java" "Open source code"
+        click CA "./src/main/java/org/nbreval/weather_twin/gateway/infrastructure/adapter/CoapAdapter.java" "Open source code"
+        click MPA "./src/main/java/org/nbreval/weather_twin/gateway/infrastructure/adapter/MeasureProcessorAdapter.java" "Open source code"
+        click SRA "./src/main/java/org/nbreval/weather_twin/gateway/infrastructure/adapter/SensorRegistrationAdapter.java" "Open source code"
+        click LA "./src/main/java/org/nbreval/weather_twin/gateway/infrastructure/adapter/LocaleAdapter.java" "Open source code"
+        click TA "./src/main/java/org/nbreval/weather_twin/gateway/infrastructure/adapter/TemplatesAdapter.java" "Open source code"
     end
 
     subgraph APP["Application Layer"]
@@ -119,9 +129,9 @@ graph LR
             style SS fill:#07C3F7,color:black;
             style SCS fill:#07C3F7,color:black;
 
-            click DS "apps/gateway/src/main/java/org/nbreval/weather_twin/gateway/application/service/DispatcherService.java" "Open source code"
-            click SS "apps/gateway/src/main/java/org/nbreval/weather_twin/gateway/application/service/SchedulerService.java" "Open source code"
-            click SCS "apps/gateway/src/main/java/org/nbreval/weather_twin/gateway/application/service/SensorConfigurationService.java" "Open source code"
+            click DS "./src/main/java/org/nbreval/weather_twin/gateway/application/service/DispatcherService.java" "Open source code"
+            click SS "./src/main/java/org/nbreval/weather_twin/gateway/application/service/SchedulerService.java" "Open source code"
+            click SCS "./src/main/java/org/nbreval/weather_twin/gateway/application/service/SensorConfigurationService.java" "Open source code"
             
         end
 
@@ -138,10 +148,10 @@ graph LR
             style SP fill:#27F58B,color:black;
             style SCP fill:#27F58B,color:black;
 
-            click DP "apps/gateway/src/main/java/org/nbreval/weather_twin/gateway/application/port/in/DispatcherPort.java" "Open source code"
-            click WLP "apps/gateway/src/main/java/org/nbreval/weather_twin/gateway/application/port/in/WtalLogicPort.java" "Open source code"
-            click SP "apps/gateway/src/main/java/org/nbreval/weather_twin/gateway/application/port/in/SchedulerPort.java" "Open source code"
-            click SCP "apps/gateway/src/main/java/org/nbreval/weather_twin/gateway/application/port/in/SensorConfigurationPort.java" "Open source code"
+            click DP "./src/main/java/org/nbreval/weather_twin/gateway/application/port/in/DispatcherPort.java" "Open source code"
+            click WLP "./src/main/java/org/nbreval/weather_twin/gateway/application/port/in/WtalLogicPort.java" "Open source code"
+            click SP "./src/main/java/org/nbreval/weather_twin/gateway/application/port/in/SchedulerPort.java" "Open source code"
+            click SCP "./src/main/java/org/nbreval/weather_twin/gateway/application/port/in/SensorConfigurationPort.java" "Open source code"
         end
 
         style IP stroke:#27F58B,color:#27F58B;
@@ -157,12 +167,10 @@ graph LR
             style MPP fill:#F59090,color:black;
             style OCP fill:#F59090,color:black;
 
-            click ADP "apps/gateway/src/main/java/org/nbreval/weather_twin/gateway/application/port/out/AggregationsDbPort.java" "Open source code"
-            click EDP "apps/gateway/src/main/java/org/nbreval/weather_twin/gateway/application/port/out/ExpressionsDbPort.java" "Open source code"
-            click MPP "apps/gateway/src/main/java/org/nbreval/weather_twin/gateway/application/port/out/MeasureProcessorPort.java" "Open source code"
-            click OCP "apps/gateway/src/main/java/org/nbreval/weather_twin/gateway/application/port/out/OutputConnectorPort.java" "Open source code"
-            
-            
+            click ADP "./src/main/java/org/nbreval/weather_twin/gateway/application/port/out/AggregationsDbPort.java" "Open source code"
+            click EDP "./src/main/java/org/nbreval/weather_twin/gateway/application/port/out/ExpressionsDbPort.java" "Open source code"
+            click MPP "./src/main/java/org/nbreval/weather_twin/gateway/application/port/out/MeasureProcessorPort.java" "Open source code"
+            click OCP "./src/main/java/org/nbreval/weather_twin/gateway/application/port/out/OutputConnectorPort.java" "Open source code"
         end
 
         style OP stroke:#F59090,color:#F59090;
@@ -192,7 +200,8 @@ graph LR
     SS --> MPP
     SRA --> SCP
     SRA --> SP
-    U --> SRA
+    U --> WA
+    WA --> SRA
     SM --> CA
     ADA --> MDB
     EDA --> MDB
@@ -200,6 +209,10 @@ graph LR
     SCS --> EDP
     SCS --> ADP
     SS --> OCP
+    SMDA --> MDB
+    SCS --> SMDA
+    WA --> LA
+    WA --> TA
 ```
 
 ## 🈺 Weather-Twin Aggregation Language
