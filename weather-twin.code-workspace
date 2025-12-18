@@ -44,8 +44,10 @@
 				"mainClass": "org.nbreval.weather_twin.gateway.GatewayApplication",
 				"projectName": "gateway",
 				"env": {
-					"COAP_PORT": "5683"
-				}
+					"COAP_PORT": "5683",
+					"SPRING_PROFILE": "dev"
+				},
+				"vmArgs": "--add-opens java.base/java.util=ALL-UNNAMED"
 			}
 		]
 	}
