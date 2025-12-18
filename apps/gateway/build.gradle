@@ -54,6 +54,7 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
+	jvmArgs("--add-opens", "java.base/java.util=ALL-UNNAMED")
 }
 
 def antlrGeneratedSrcDic = file('src/main/java/org/nbreval/weather_twin/gateway/infrastructure/util/wtal')
