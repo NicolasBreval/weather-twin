@@ -27,6 +27,7 @@ ext {
 	set('eclipseCaliforniumVersion', "3.14.0")
 	set('antlrVersion', "4.13.2")
 	set('springdocVersion', "3.0.0")
+	set('kryoSerializersVersion', "0.45")
 }
 
 configurations {
@@ -42,6 +43,7 @@ dependencies {
 	implementation "com.esotericsoftware:kryo:${kryoVersion}"
 	implementation "org.eclipse.californium:californium-core:${eclipseCaliforniumVersion}"
 	implementation "org.springdoc:springdoc-openapi-starter-webflux-ui:${springdocVersion}"
+	implementation "de.javakaffee:kryo-serializers:${kryoSerializersVersion}"
 	antlr "org.antlr:antlr4:${antlrVersion}"
 	implementation "org.antlr:antlr4-runtime:${antlrVersion}"
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
