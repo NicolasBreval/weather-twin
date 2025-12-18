@@ -1,0 +1,62 @@
+<th:block th:fragment="sensor-icon(type)">
+  <th:block th:if="${type == 'TEMPERATURE'}">
+    <div class="tooltip tooltip-botom" th:data-tip="#{site.body.sensor-list.type.temperature}">
+      <div th:replace="~{fragments/icons :: thermometer-icon('w-8 h-8 cursor-pointer')}"></div>
+    </div>
+  </th:block>
+  <th:block th:if="${type == 'HUMIDITY'}">
+    <div class="tooltip tooltip-botom" th:data-tip="#{site.body.sensor-list.type.humidity}">
+      <div th:replace="~{fragments/icons :: droplets-icon('w-8 h-8 cursor-pointer')}"></div>
+    </div>
+  </th:block>
+  <th:block th:if="${type == 'PROXIMITY'}">
+    <div class="tooltip tooltip-botom" th:data-tip="#{site.body.sensor-list.type.proximity}">
+      <div th:replace="~{fragments/icons :: radar-icon('w-8 h-8 cursor-pointer')}"></div>
+    </div>
+  </th:block>
+  <th:block th:if="${type == 'ACCELERATION'}">
+    <div class="tooltip tooltip-botom" th:data-tip="#{site.body.sensor-list.type.acceleration}">
+      <div th:replace="~{fragments/icons :: gauge-icon('w-8 h-8 cursor-pointer')}"></div>
+    </div>
+  </th:block>
+  <th:block th:if="${type == 'GIROSCOPE'}">
+    <div class="tooltip tooltip-botom" th:data-tip="#{site.body.sensor-list.type.giroscope}">
+      <div th:replace="~{fragments/icons :: rotate3d-icon('w-8 h-8 cursor-pointer')}"></div>
+    </div>
+  </th:block>
+  <th:block th:if="${type == 'GAS'}">
+    <div class="tooltip tooltip-botom" th:data-tip="#{site.body.sensor-list.type.gas}">
+      <div th:replace="~{fragments/icons :: cloud-icon('w-8 h-8 cursor-pointer')}"></div>
+    </div>
+  </th:block>
+  <th:block th:if="${type == 'PRESSURE'}">
+    <div class="tooltip tooltip-botom" th:data-tip="#{site.body.sensor-list.type.pressure}">
+      <div th:replace="~{fragments/icons :: circle-gauge-icon('w-8 h-8 cursor-pointer')}"></div>
+    </div>
+  </th:block>
+  <th:block th:if="${type == 'LEVEL'}">
+    <div class="tooltip tooltip-botom" th:data-tip="#{site.body.sensor-list.type.level}">
+      <div th:replace="~{fragments/icons :: cylinder-icon('w-8 h-8 cursor-pointer')}"></div>
+    </div>
+  </th:block>
+  <th:block th:if="${type == 'PHOTOELECTRIC'}">
+    <div class="tooltip tooltip-botom" th:data-tip="#{site.body.sensor-list.type.photoelectric}">
+      <div th:replace="~{fragments/icons :: solar-panel-icon('w-8 h-8 cursor-pointer')}"></div>
+    </div>
+  </th:block>
+</th:block>
+
+<th:block th:fragment="titled-text(title, text, className)">
+  <div th:class="|flex flex-col justify-start items-start ${className}|">
+    <span class="text-xs font-bold text-ellipsis whitespace-nowrap overflow-hidden" th:text="${title}"></span>
+    <span class="text-sm text-ellipsis whitespace-nowrap overflow-hidden" th:text="${text}"></span>
+  </div>
+</th:block>
+
+<th:block th:fragment="titled-expression-code(title, parts, className)">
+  <div th:class="|flex flex-col justify-start items-start overflow-hidden ${className}|">
+    <span class="text-xs font-bold" th:text="${title}"></span>
+    <pre
+      class="truncate max-w-[100%]"><code><th:block th:each="word : ${parts}"><span th:classappend="${word.matches('\s*(.*\()*(curr|agg|steps|interval|default)((;|,)*)\s*') ? 'code-var' : word.matches('POW|SQRT|MAP|FILTER|ISNULL|TERNARY|IN') ? 'code-func' : word.matches('&quot;.*&quot;') ? 'code-string' : ''}" th:text="${word}"></span></th:block></code></pre>
+  </div>
+</th:block>

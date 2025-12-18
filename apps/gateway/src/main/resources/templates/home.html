@@ -7,18 +7,26 @@
   <title th:text="#{site.title}">Weather-Twin Gateway Admin Console</title>
   <link rel="stylesheet" th:href="@{/css/tailwind.css}">
   <script th:src="@{/js/theme.js}"></script>
+  <script th:src="@{/js/status.js}"></script>
 </head>
 
 <body class="h-screen">
-  <div class="navbar bg-base-100 hadow-sm">
-    <div class="flex-1">
-      <a class="btn btn-ghost text-xl" th:text="#{site.header.title}">Weather-Twin Gateway Admin Console</a>
+  <div class="navbar bg-base-100 shadow-sm">
+    <div class="flex-1 flex gap-3 justify-start items-center">
+      <span class="text-xl font-bold" th:text="#{site.header.title}">Weather-Twin Gateway Admin Console</span>
+      <div class="tooltip tooltip-bottom tooltip-status-success hidden"
+        th:data-tip="#{site.header.status.success.tooltip}">
+        <span class="status status-success cursor-pointer"></span>
+      </div>
+      <div class="tooltip tooltip-bottom tooltip-status-error hidden" th:data-tip="#{site.header.status.error.tooltip}">
+        <span class="status status-error cursor-pointer"></span>
+      </div>
     </div>
     <div class="flex-none">
       <label class="swap swap-rotate">
         <input id="theme-controller" type="checkbox" class="theme-controller" value="dark" />
-        <div th:replace="~{fragments/icons :: sun-icon('swap-off fill-current w-8 h-8')}"></div>
-        <div th:replace="~{fragments/icons :: moon-icon('swap-on fill-current w-8 h-8')}"></div>
+        <div th:replace="~{fragments/icons :: sun-icon('swap-off w-8 h-8')}"></div>
+        <div th:replace="~{fragments/icons :: moon-icon('swap-on w-8 h-8')}"></div>
       </label>
       <div class="dropdown dropdown-end">
         <div tabindex="0" class="btn btn-sm btn-ghost gap-1 px-1.5">
@@ -51,6 +59,50 @@
         </ul>
       </div>
     </div>
+  </div>
+
+  <div class="py-8 px-[10%]">
+    <ul class="list bg-base-100 rounded-box shadow-md">
+      <li class="p-4 pb-2 text-xs opacity-60 tracking-wide" th:text="#{site.body.sensor-list.top}"></li>
+
+      <th:block th:each="r: ${registrations}">
+        <li class="list-row items-center">
+          <div class="flex flex-col justify-start items-start h-full">
+            <div class="flex">
+              <div th:replace="~{fragments/components :: sensor-icon(${r.sensorType().name()})}"></div>
+              <span class="text-xs max-w-8 w-8 text-ellipsis whitespace-nowrap overflow-hidden self-end"
+                th:text="${r.magnitude}"></span>
+            </div>
+          </div>
+          <div class="flex flex-col gap-5">
+            <div class="flex justify-between">
+              <div class="flex flex-1 gap-1">
+                <th:block
+                  th:replace="~{fragments/components :: titled-text(#{site.body.sensor-list.description.device}, ${r.device}, 'w-[20%] max-w-[20%]')}">
+                </th:block>
+                <th:block
+                  th:replace="~{fragments/components :: titled-text(#{site.body.sensor-list.description.sensor}, ${r.sensor}, 'w-[20%] max-w-[20%]')}">
+                </th:block>
+                <th:block
+                  th:replace="~{fragments/components :: titled-text(#{site.body.sensor-list.description.title}, ${r.description}, 'w-[50%] max-w-[50%]')}">
+                </th:block>
+              </div>
+              <div class="tooltip tooltip-bottom" th:data-tip="#{site.body.sensor-list.actions.edit}">
+                <div th:replace="~{fragments/icons :: pencil-icon('w-5 h-5 cursor-pointer')}"></div>
+              </div>
+            </div>
+            <div class="flex gap-1">
+              <th:block
+                th:replace="~{fragments/components :: titled-expression-code(#{site.body.sensor-list.aggregation-expression.title}, ${r.getAggregationExpressionParts()}, 'w-[40%] max-w-[40%]')}">
+              </th:block>
+              <th:block
+                th:replace="~{fragments/components :: titled-expression-code(#{site.body.sensor-list.flush-expression.title}, ${r.getFlushExpressionParts()}, 'w-[50%] max-w-[60%]')}">
+              </th:block>
+            </div>
+          </div>
+        </li>
+      </th:block>
+    </ul>
   </div>
 
 </body>

@@ -30,6 +30,9 @@
   --color-warning-content: oklch(28% 0.066 53.813);
   --color-error: oklch(64% 0.246 16.439);
   --color-error-content: oklch(27% 0.105 12.094);
+  --color-code-variable: #0047AB;
+  --color-code-function: #D100B9;
+  --color-code-string: #00A329;
   --radius-selector: 1rem;
   --radius-field: 2rem;
   --radius-box: 1rem;
@@ -66,6 +69,9 @@
   --color-warning-content: oklch(42% 0.095 57.708);
   --color-error: oklch(73.7% 0.121 32.639);
   --color-error-content: oklch(23.501% 0.096 290.329);
+  --color-code-variable: #89CFF0;
+  --color-code-function: #FF8AF5;
+  --color-code-string: #8AFFA7;
   --radius-selector: 1rem;
   --radius-field: 0.5rem;
   --radius-box: 1rem;
@@ -74,4 +80,16 @@
   --border: 1px;
   --depth: 0;
   --noise: 0;
+}
+
+.code-var {
+  color: var(--color-code-variable);
+}
+
+.code-func {
+  color: var(--color-code-function);
+}
+
+.code-string {
+  color: var(--color-code-string);
 }
