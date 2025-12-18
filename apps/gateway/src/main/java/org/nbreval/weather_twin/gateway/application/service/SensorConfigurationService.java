@@ -8,10 +8,11 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.nbreval.weather_twin.gateway.application.entity.SensorRegistration;
+import org.nbreval.weather_twin.gateway.application.enumeration.SensorType;
 import org.nbreval.weather_twin.gateway.application.port.in.SensorConfigurationPort;
 import org.nbreval.weather_twin.gateway.application.port.out.AggregationsDbPort;
 import org.nbreval.weather_twin.gateway.application.port.out.ExpressionsDbPort;
-import org.nbreval.weather_twin.gateway.infrastructure.enumeration.DataType;
+import org.nbreval.weather_twin.gateway.application.port.out.SensorMetadataDbPort;
 import org.nbreval.weather_twin.gateway.infrastructure.exception.AlreadyExistsException;
 import org.nbreval.weather_twin.gateway.infrastructure.exception.NotExistsException;
 
@@ -36,14 +37,22 @@ public class SensorConfigurationService implements SensorConfigurationPort {
    */
   private final ExpressionsDbPort expressionsDB;
 
-  public SensorConfigurationService(AggregationsDbPort aggregationsDB, ExpressionsDbPort expressionsDB) {
+  /**
+   * Allows to interact with sensor metadata database.
+   */
+  private final SensorMetadataDbPort sensorMetadataDB;
+
+  public SensorConfigurationService(AggregationsDbPort aggregationsDB, ExpressionsDbPort expressionsDB,
+      SensorMetadataDbPort sensorMetadabaDB) {
     this.aggregationsDB = aggregationsDB;
     this.expressionsDB = expressionsDB;
+    this.sensorMetadataDB = sensorMetadabaDB;
   }
 
   @Override
-  public Set<Long> registerSensor(String device, String sensor, DataType dataType, String defaultValue,
-      String aggregationExpression, String flushExpression, Set<Long> intervals) {
+  public Set<Long> registerSensor(String device, String sensor, String defaultValue,
+      String aggregationExpression, String flushExpression, Set<Long> intervals, SensorType sensorType,
+      String magnitude, String description) {
 
     // Check if sensor is already registered
     if (!aggregationsDB.getAggregations(device, sensor).isEmpty())
@@ -59,11 +68,14 @@ public class SensorConfigurationService implements SensorConfigurationPort {
     // Register aggregated measure
     var currentIntervals = aggregationsDB.getAllIntervals();
 
-    var defaultValueObj = dataType.getFormattedValue(defaultValue.getBytes());
+    var defaultValueObj = sensorType.dataType().getFormattedValue(defaultValue.getBytes());
     intervals.forEach(interval -> aggregationsDB.registerAggregation(device,
-        sensor, interval, dataType, defaultValueObj));
+        sensor, interval, sensorType.dataType(), defaultValueObj));
 
     aggregationsDB.applyChanges();
+
+    // Register sensor metadata
+    sensorMetadataDB.addMetadata(device, sensor, sensorType, magnitude, description);
 
     return intervals.stream().filter(i -> !currentIntervals.contains(i)).collect(Collectors.toSet());
   }
@@ -82,6 +94,9 @@ public class SensorConfigurationService implements SensorConfigurationPort {
     expressionsDB.removeFlushExpression(device, sensor);
 
     aggregationsDB.applyChanges();
+
+    // Remove sensor metadata
+    sensorMetadataDB.removeMetadata(device, sensor);
 
     return removed.keySet().stream().filter(interval -> aggregationsDB.getAggregationsByInterval(interval).isEmpty())
         .collect(Collectors.toSet());
@@ -104,6 +119,9 @@ public class SensorConfigurationService implements SensorConfigurationPort {
     }
 
     aggregationsDB.applyChanges();
+
+    // Remove sensor metasata
+    sensorMetadataDB.removeMetadata(device, sensor);
 
     return aggregationsDB.getAggregationsByInterval(interval).isEmpty();
   }
@@ -164,14 +182,16 @@ public class SensorConfigurationService implements SensorConfigurationPort {
                 if (v == null) {
                   var aggExpression = expressionsDB.getAggregatorExpression(device, sensor);
                   var flushExpression = expressionsDB.getFlushExpression(device, sensor);
+                  var metadata = sensorMetadataDB.getMetadata(device, sensor);
 
-                  return new SensorRegistration(device, sensor, aggExpression, flushExpression, agg.dataType(),
-                      agg.defaultValue().toString(), Set.of(interval));
+                  return new SensorRegistration(device, sensor, aggExpression, flushExpression,
+                      agg.defaultValue().toString(), Set.of(interval), metadata.type(), metadata.magnitude(),
+                      metadata.description());
                 } else {
                   return new SensorRegistration(v.device(), v.sensor(), v.aggregationExpression(), v.flushExpression(),
-                      v.dataType(),
                       v.defaultValue(), Stream.concat(v.intervals().stream(), Stream.of(interval))
-                          .collect(Collectors.toUnmodifiableSet()));
+                          .collect(Collectors.toUnmodifiableSet()),
+                      v.sensorType(), v.magnitude(), v.description());
                 }
               });
         })));

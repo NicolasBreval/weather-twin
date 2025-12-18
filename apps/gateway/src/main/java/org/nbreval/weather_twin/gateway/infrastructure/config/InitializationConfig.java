@@ -12,6 +12,7 @@ import org.nbreval.weather_twin.gateway.application.port.in.WTALLogicPort;
 import org.nbreval.weather_twin.gateway.application.port.out.AggregationsDbPort;
 import org.nbreval.weather_twin.gateway.application.port.out.ExpressionsDbPort;
 import org.nbreval.weather_twin.gateway.application.port.out.MeasureProcessorPort;
+import org.nbreval.weather_twin.gateway.application.port.out.SensorMetadataDbPort;
 import org.nbreval.weather_twin.gateway.application.service.DispatcherService;
 import org.nbreval.weather_twin.gateway.application.service.SchedulerService;
 import org.nbreval.weather_twin.gateway.application.service.SensorConfigurationService;
@@ -20,6 +21,7 @@ import org.nbreval.weather_twin.gateway.infrastructure.adapter.AggregationsDbAda
 import org.nbreval.weather_twin.gateway.infrastructure.adapter.CoapAdapter;
 import org.nbreval.weather_twin.gateway.infrastructure.adapter.ExpressionsDbAdapter;
 import org.nbreval.weather_twin.gateway.infrastructure.adapter.MeasureProcessorAdapter;
+import org.nbreval.weather_twin.gateway.infrastructure.adapter.SensorMetadataDbAdapter;
 import org.nbreval.weather_twin.gateway.infrastructure.exception.GatewayInitializationException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -89,6 +91,22 @@ public class InitializationConfig {
     return aggregationsDB;
   }
 
+  @Bean(destroyMethod = "close")
+  public SensorMetadataDbPort sensorMetadataDB(@Value("${db.metadata.location}") String metadataLocation) {
+    var metadataParentFolder = Paths.get(metadataLocation).getParent();
+
+    if (!Files.exists(metadataParentFolder)) {
+      try {
+        Files.createDirectories(metadataParentFolder);
+      } catch (IOException e) {
+        throw new GatewayInitializationException(
+            "Error creating parent folder for metadata location '%s'".formatted(metadataLocation));
+      }
+    }
+
+    return new SensorMetadataDbAdapter(metadataLocation);
+  }
+
   @Bean
   public WTALLogicPort wtalLogic() {
     return new WtalLogicService();
@@ -123,7 +141,7 @@ public class InitializationConfig {
 
   @Bean
   public SensorConfigurationPort sensorConfiguration(AggregationsDbPort aggregationsDB,
-      ExpressionsDbPort expressionsDB) {
-    return new SensorConfigurationService(aggregationsDB, expressionsDB);
+      ExpressionsDbPort expressionsDB, SensorMetadataDbPort sensorMetadataDB) {
+    return new SensorConfigurationService(aggregationsDB, expressionsDB, sensorMetadataDB);
   }
 }

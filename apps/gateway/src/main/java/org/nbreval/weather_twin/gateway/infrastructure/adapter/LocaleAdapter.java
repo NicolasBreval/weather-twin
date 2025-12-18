@@ -17,11 +17,11 @@ import reactor.core.publisher.Mono;
 
 @Controller
 @RequestMapping("/lang")
-public class LocaleController {
+public class LocaleAdapter {
 
   private final LocaleContextResolver localeContextResolver;
 
-  public LocaleController(LocaleContextResolver localeContextResolver) {
+  public LocaleAdapter(LocaleContextResolver localeContextResolver) {
     this.localeContextResolver = localeContextResolver;
   }
 

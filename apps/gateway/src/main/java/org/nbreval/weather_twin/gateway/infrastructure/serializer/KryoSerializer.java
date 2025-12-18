@@ -11,6 +11,8 @@ import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.esotericsoftware.kryo.serializers.DefaultSerializers;
 
+import de.javakaffee.kryoserializers.UnmodifiableCollectionsSerializer;
+
 /**
  * Custom serializer for MapDB using Kryo.
  */
@@ -26,6 +28,7 @@ public class KryoSerializer<T> implements Serializer<T> {
   @SuppressWarnings("unchecked")
   public KryoSerializer(Class<T> clazz, Class<?>... classes) {
     this.kryo = new Kryo();
+    UnmodifiableCollectionsSerializer.registerSerializers(kryo);
     this.kryo.register(clazz);
     for (var c : classes) {
       if (c.isEnum()) {

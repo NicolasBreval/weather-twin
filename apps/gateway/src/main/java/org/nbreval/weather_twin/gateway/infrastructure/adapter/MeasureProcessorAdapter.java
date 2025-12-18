@@ -58,6 +58,7 @@ public class MeasureProcessorAdapter implements MeasureProcessorPort {
       context.put("agg", aggregation.value());
       context.put("steps", aggregation.steps());
       context.put("interval", interval);
+      context.put("default", aggregation.defaultValue());
 
       var evaluator = new AggregatorWtalEvaluator(wtalLogic, context);
       return Map.entry(interval, evaluator.evaluate(fluxExpression));

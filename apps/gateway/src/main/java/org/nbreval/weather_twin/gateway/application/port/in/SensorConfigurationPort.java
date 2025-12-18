@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.nbreval.weather_twin.gateway.application.entity.SensorRegistration;
-import org.nbreval.weather_twin.gateway.infrastructure.enumeration.DataType;
+import org.nbreval.weather_twin.gateway.application.enumeration.SensorType;
 
 import reactor.util.function.Tuple2;
 
@@ -25,7 +25,6 @@ public interface SensorConfigurationPort {
    * 
    * @param device                Device related to sensor.
    * @param sensor                Sensor's name.
-   * @param dataType              Data type expected for senor's measures.
    * @param defaultValue          Default value used when sensor's aggregation is
    *                              released.
    * @param aggregationExpression WTAL expression used to aggregate measures
@@ -36,12 +35,19 @@ public interface SensorConfigurationPort {
    * @param intervals             List of intervals related to sensor. This
    *                              determines when the aggregated values are
    *                              flushed to external systems using schedulers.
+   * @param sensorType            Type of sensor to register, like temperature,
+   *                              humidity, pressure,...
+   * @param magnitude             Magnitude referenced to sensor measures, like
+   *                              kg, mL, dB,...
+   * @param description           A description defined by user to identify
+   *                              sensor.
    * 
    * @return The list of intervals which are not related to an scheduler on
    *         system.
    */
-  Set<Long> registerSensor(String device, String sensor, DataType dataType, String defaultValue,
-      String aggregationExpression, String flushExpression, Set<Long> intervals);
+  Set<Long> registerSensor(String device, String sensor, String defaultValue,
+      String aggregationExpression, String flushExpression, Set<Long> intervals, SensorType sensorType,
+      String magnitude, String description);
 
   /**
    * Unregisters a sensor from system.

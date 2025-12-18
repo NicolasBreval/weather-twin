@@ -1,5 +1,8 @@
 package org.nbreval.weather_twin.gateway.infrastructure.adapter;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -43,7 +46,8 @@ public class AggregationsDbAdapter implements AggregationsDbPort {
         .allocateIncrement(1024)
         .make(), "aggregations", new KryoSerializer<>(AggregationKey.class),
         new KryoSerializer<>(Aggregation.class, Float.class, Integer.class, Boolean.class, Json.class,
-            JsonArray.class, JsonValue.class, String.class, DataType.class));
+            JsonArray.class, JsonValue.class, String.class, DataType.class, HashMap.class, LinkedHashMap.class,
+            ArrayList.class));
   }
 
   @Override

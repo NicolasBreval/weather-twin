@@ -9,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -23,7 +22,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 /**
@@ -57,12 +55,6 @@ public class SensorRegistrationAdapter {
     this.scheduler = scheduler;
   }
 
-  @Operation(summary = "Obtains all registration stored on system.", description = "Gets all aggregations registered on system and returns it on a flux")
-  @GetMapping
-  public Flux<SensorRegistration> listAllRegistrations() {
-    return Flux.fromIterable(sensorConfigurator.getAllRegistrations());
-  }
-
   @Operation(summary = "Registers new sensor on system.", description = "Adds a new sensor in aggregations database and create all resources required by the sensor, like aggregation entry in database, or schedulers.", responses = {
       @ApiResponse(responseCode = "201", description = "The sensor has been successfully registered.", content = @Content(mediaType = MediaType.TEXT_PLAIN_VALUE)),
       @ApiResponse(responseCode = "409", description = "The sensor to register already exists on system.", content = @Content(mediaType = MediaType.TEXT_PLAIN_VALUE))
@@ -70,9 +62,9 @@ public class SensorRegistrationAdapter {
   @PutMapping
   public Mono<ResponseEntity<String>> registerSensorConfiguration(
       @RequestBody @Valid SensorRegistration registration) {
-    sensorConfigurator.registerSensor(registration.device(), registration.sensor(), registration.dataType(),
+    sensorConfigurator.registerSensor(registration.device(), registration.sensor(),
         registration.defaultValue(), registration.aggregationExpression(), registration.flushExpression(),
-        registration.intervals());
+        registration.intervals(), registration.sensorType(), registration.magnitude(), registration.description());
 
     // Register intervals
     registration.intervals().forEach(interval -> scheduler.schedule(interval));

@@ -10,6 +10,8 @@ db:
     location: ${DB_FLUSHES_LOCATION:./data/flushes.db}
   aggregations:
     location: ${DB_AGGREGATIONS_LOCATION:./data/aggregations.db}
+  metadata:
+    location: ${DB_METADATA_LOCATION:./data/metadata.db}
 
 springdoc:
   swagger-ui:
@@ -26,3 +28,5 @@ management.endpoints.web.exposure.include: "*"
 spring.thymeleaf:
   excluded-view-names: actuator/*
   reactive.max-chunk-size: 1024
+
+spring.profiles.active: ${SPRING_PROFILE:pro}
