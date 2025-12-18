@@ -1,7 +1,6 @@
 package org.nbreval.weather_twin.gateway.test;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Set;
 
