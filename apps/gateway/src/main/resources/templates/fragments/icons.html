@@ -120,3 +120,75 @@
     <path d="m8.66 7.66 1.41 1.41" />
   </svg>
 </th:block>
+
+<th:block th:fragment="plus-icon(className)">
+  <svg th:class="${className}" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M5 12h14" />
+    <path d="M12 5v14" />
+  </svg>
+</th:block>
+
+<th:block th:fragment="x-icon(className)">
+  <svg th:class="${className}" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M18 6 6 18" />
+    <path d="m6 6 12 12" />
+  </svg>
+</th:block>
+
+<th:block th:fragment="minus-icon(className)">
+  <svg th:class="${className}" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M5 12h14" />
+  </svg>
+</th:block>
+
+<th:block th:fragment="int-icon(className)">
+  <svg th:class="${className}" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="14" y="14" width="4" height="6" rx="2" />
+    <rect x="6" y="4" width="4" height="6" rx="2" />
+    <path d="M6 20h4" />
+    <path d="M14 10h4" />
+    <path d="M6 14h2v6" />
+    <path d="M14 4h2v6" />
+  </svg>
+</th:block>
+
+<th:block th:fragment="float-icon(className)">
+  <svg th:class="${className}" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M10 18h10" />
+    <path d="m17 21 3-3-3-3" />
+    <path d="M3 11h.01" />
+    <rect x="15" y="3" width="5" height="8" rx="2.5" />
+    <rect x="6" y="3" width="5" height="8" rx="2.5" />
+  </svg>
+</th:block>
+
+<th:block th:fragment="text-icon(className)">
+  <svg th:class="${className}" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m6 16 6-12 6 12" />
+    <path d="M8 12h8" />
+    <path
+      d="M4 21c1.1 0 1.1-1 2.3-1s1.1 1 2.3 1c1.1 0 1.1-1 2.3-1 1.1 0 1.1 1 2.3 1 1.1 0 1.1-1 2.3-1 1.1 0 1.1 1 2.3 1 1.1 0 1.1-1 2.3-1" />
+  </svg>
+</th:block>
+
+<th:block th:fragment="bool-icon(className)">
+  <svg th:class="${className}" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M16 12h3" />
+    <path d="M17.5 12a8 8 0 0 1-8 8A4.5 4.5 0 0 1 5 15.5c0-6 8-4 8-8.5a3 3 0 1 0-6 0c0 3 2.5 8.5 12 13" />
+  </svg>
+</th:block>
+
+<th:block th:fragment="json-icon(className)">
+  <svg th:class="${className}" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M8 3H7a2 2 0 0 0-2 2v5a2 2 0 0 1-2 2 2 2 0 0 1 2 2v5c0 1.1.9 2 2 2h1" />
+    <path d="M16 21h1a2 2 0 0 0 2-2v-5c0-1.1.9-2 2-2a2 2 0 0 1-2-2V5a2 2 0 0 0-2-2h-1" />
+  </svg>
+</th:block>

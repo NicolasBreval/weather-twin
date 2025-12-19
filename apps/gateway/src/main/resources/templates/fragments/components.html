@@ -48,15 +48,24 @@
 
 <th:block th:fragment="titled-text(title, text, className)">
   <div th:class="|flex flex-col justify-start items-start ${className}|">
-    <span class="text-xs font-bold text-ellipsis whitespace-nowrap overflow-hidden" th:text="${title}"></span>
-    <span class="text-sm text-ellipsis whitespace-nowrap overflow-hidden" th:text="${text}"></span>
+    <span class="text-xs font-bold max-w-[100%]" th:text="${title}"></span>
+    <span class="text-sm max-w-[100%]" th:text="${text}"></span>
   </div>
 </th:block>
 
 <th:block th:fragment="titled-expression-code(title, parts, className)">
   <div th:class="|flex flex-col justify-start items-start overflow-hidden ${className}|">
-    <span class="text-xs font-bold" th:text="${title}"></span>
+    <span class="text-xs font-bold max-w-[100%]" th:text="${title}"></span>
     <pre
-      class="truncate max-w-[100%]"><code><th:block th:each="word : ${parts}"><span th:classappend="${word.matches('\s*(.*\()*(curr|agg|steps|interval|default)((;|,)*)\s*') ? 'code-var' : word.matches('POW|SQRT|MAP|FILTER|ISNULL|TERNARY|IN') ? 'code-func' : word.matches('&quot;.*&quot;') ? 'code-string' : ''}" th:text="${word}"></span></th:block></code></pre>
+      class="max-w-[100%] whitespace-pre-wrap"><code><th:block th:each="word : ${parts}"><span th:classappend="${word.matches('\s*(.*\()*(curr|agg|steps|interval|default)((;|,)*)\s*') ? 'code-var' : word.matches('POW|SQRT|MAP|FILTER|ISNULL|TERNARY|IN') ? 'code-func' : word.matches('&quot;.*&quot;') ? 'code-string' : ''}" th:text="${word}"></span></th:block></code></pre>
+  </div>
+</th:block>
+
+<th:block th:fragment="interval-item-input(id)">
+  <div class="w-full flex gap-1" th:id="|add-interval-${id}|">
+    <input th:id="|add-interval-input-${id}|" type="number" class="input validator" min="1000" required />
+    <button type="button" class="btn btn-ghost">
+      <div th:replace="~{fragments/icons :: minus-icon('w-2 h-2')}"></div>
+    </button>
   </div>
 </th:block>

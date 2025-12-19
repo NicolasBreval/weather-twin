@@ -4,6 +4,7 @@ import org.nbreval.weather_twin.gateway.application.port.in.SensorConfigurationP
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import reactor.core.publisher.Mono;
 
@@ -22,6 +23,12 @@ public class TemplatesAdapter {
 
     model.addAttribute("registrations", allRegistrations);
     return Mono.just("home");
+  }
+
+  @GetMapping("/form/interval/add")
+  public Mono<String> newAddIntervalItem(@RequestParam("id") String id, Model model) {
+    model.addAttribute("id", id);
+    return Mono.just("fragments/components :: interval-item-input");
   }
 
 }
