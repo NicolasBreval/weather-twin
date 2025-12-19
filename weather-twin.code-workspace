@@ -38,7 +38,10 @@
 				"--add-opens", 
 				"java.base/java.util=ALL-UNNAMED"
 			]
-		}
+		},
+		"java.import.exclusions": [
+			"**/build/generated/aotTestResources/**"
+		]
 	},
 	"launch": {
 		"version": "0.2.0",
