@@ -96,8 +96,12 @@ public class SchedulerService implements SchedulerPort {
 
   @Override
   public void unschedule(long interval) {
-    var scheduling = schedulings.remove(interval);
-    scheduling.dispose();
+    var aggregations = aggregationsDB.getAggregationsByInterval(interval);
+
+    if (aggregations.isEmpty()) {
+      var scheduling = schedulings.remove(interval);
+      scheduling.dispose();
+    }
   }
 
 }

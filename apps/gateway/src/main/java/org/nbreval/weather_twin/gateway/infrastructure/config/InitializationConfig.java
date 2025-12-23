@@ -141,7 +141,7 @@ public class InitializationConfig {
 
   @Bean
   public SensorConfigurationPort sensorConfiguration(AggregationsDbPort aggregationsDB,
-      ExpressionsDbPort expressionsDB, SensorMetadataDbPort sensorMetadataDB) {
-    return new SensorConfigurationService(aggregationsDB, expressionsDB, sensorMetadataDB);
+      ExpressionsDbPort expressionsDB, SensorMetadataDbPort sensorMetadataDB, MeasureProcessorPort measureProcessor) {
+    return new SensorConfigurationService(aggregationsDB, expressionsDB, sensorMetadataDB, measureProcessor);
   }
 }

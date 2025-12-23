@@ -48,4 +48,11 @@ public interface MeasureProcessorPort {
   Mono<Map.Entry<Long, Object>> flushMeasure(String device, String sensor, long interval, Aggregation aggregation,
       String fluxExpression);
 
+  /**
+   * Checks if the string passed as parameter is a valid WTAL expression
+   * 
+   * @param expression String to be checked
+   * @return True if the parameter is a valid expression, else false
+   */
+  boolean checkExpression(String expression);
 }

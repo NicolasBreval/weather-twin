@@ -65,4 +65,9 @@ public class MeasureProcessorAdapter implements MeasureProcessorPort {
     });
   }
 
+  @Override
+  public boolean checkExpression(String expression) {
+    return new AggregatorWtalEvaluator(wtalLogic, Map.of()).checkSyntax(expression);
+  }
+
 }

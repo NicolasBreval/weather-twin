@@ -3,8 +3,6 @@ package org.nbreval.weather_twin.gateway.infrastructure.adapter;
 import org.nbreval.weather_twin.gateway.application.entity.SensorRegistration;
 import org.nbreval.weather_twin.gateway.application.port.in.SchedulerPort;
 import org.nbreval.weather_twin.gateway.application.port.in.SensorConfigurationPort;
-import org.nbreval.weather_twin.gateway.infrastructure.dto.UpdateExpressionDto;
-import org.nbreval.weather_twin.gateway.infrastructure.dto.UpdateIntervalsDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -101,39 +99,23 @@ public class SensorRegistrationAdapter {
     return Mono.just(new ResponseEntity<>("Sensor successfully unregistered.", HttpStatus.OK));
   }
 
-  @Operation(summary = "Updates the intervals related to a sensor.", description = "Creates the new intervals not already related to sensor, keeps the intervals present in the list to update and already registered on system and removes the intervals already registered and no present on update list. Also, modifies the schedulers based on intervals operations performed.", responses = {
-      @ApiResponse(responseCode = "200", description = "Intervals has been successfully updated", content = @Content(mediaType = MediaType.TEXT_PLAIN_VALUE)),
-      @ApiResponse(responseCode = "404", description = "There are no sensor with specified name registered on system.", content = @Content(mediaType = MediaType.TEXT_PLAIN_VALUE))
+  @Operation(summary = "Updates a registered sensor", description = "Updates some information about a previously registered sensor.", responses = {
+      @ApiResponse(responseCode = "200", description = "The sensor has been successfully updated.", content = @Content(mediaType = MediaType.TEXT_PLAIN_VALUE)),
+      @ApiResponse(responseCode = "404", description = "The sensor to update doesn't exist.", content = @Content(mediaType = MediaType.TEXT_PLAIN_VALUE))
   })
-  @PostMapping("/intervals")
-  public Mono<ResponseEntity<String>> updateIntervals(@RequestBody UpdateIntervalsDto updateIntervals) {
-    var scheduleUpdates = sensorConfigurator.updateIntervals(updateIntervals.device(), updateIntervals.sensor(),
-        updateIntervals.intervals());
+  @PostMapping
+  public Mono<ResponseEntity<?>> updateSensor(@RequestBody SensorRegistration sensor) {
 
-    scheduleUpdates.getT1().forEach(interval -> scheduler.unschedule(interval));
-    scheduleUpdates.getT2().forEach(interval -> scheduler.schedule(interval));
+    sensorConfigurator.updateSensor(sensor.device(), sensor.sensor(), sensor.aggregationExpression(),
+        sensor.flushExpression(), sensor.defaultValue(), sensor.intervals(), sensor.sensorType(), sensor.magnitude(),
+        sensor.description());
 
-    return Mono.just(new ResponseEntity<>("Intervals successfully updated.", HttpStatus.OK));
-  }
+    sensor.intervals().stream().forEach(i -> {
+      scheduler.unschedule(i);
+      scheduler.schedule(i);
+    });
 
-  @Operation(summary = "Updates a WTAL expression related to a sensor.", description = "The WTAL expression is updated on system database. If the expression to update is the aggregation expressions, produces an aggregation release.", responses = {
-      @ApiResponse(responseCode = "200", description = "The expression has been successfully updated", content = @Content(mediaType = MediaType.TEXT_PLAIN_VALUE))
-  })
-  @PostMapping("/expression/{type}")
-  public Mono<ResponseEntity<?>> updateAggregationExpression(@RequestBody UpdateExpressionDto updateExpression,
-      @PathVariable("type") String expressionType) {
+    return Mono.just(new ResponseEntity<>("Sensor successfully updated", HttpStatus.OK));
 
-    if (expressionType.equals("aggregation")) {
-      sensorConfigurator.updateAggregationExpression(updateExpression.device(), updateExpression.sensor(),
-          updateExpression.expression());
-    } else if (expressionType.equals("flush")) {
-      sensorConfigurator.updateFlushExpression(updateExpression.device(), updateExpression.sensor(),
-          updateExpression.expression());
-    } else {
-      throw new IllegalArgumentException(
-          "Invalid type '%s', only 'aggregation' and 'flush' are valid".formatted(expressionType));
-    }
-
-    return Mono.just(new ResponseEntity<>("Expression successfully updated", HttpStatus.OK));
   }
 }

@@ -1,71 +1,247 @@
 <th:block th:fragment="sensor-icon(type)">
   <th:block th:if="${type == 'TEMPERATURE'}">
-    <div class="tooltip tooltip-botom" th:data-tip="#{site.body.sensor-list.type.temperature}">
+    <div class="tooltip tooltip-right" th:data-tip="#{site.body.sensor-list.type.temperature}">
       <div th:replace="~{fragments/icons :: thermometer-icon('w-8 h-8 cursor-pointer')}"></div>
     </div>
   </th:block>
   <th:block th:if="${type == 'HUMIDITY'}">
-    <div class="tooltip tooltip-botom" th:data-tip="#{site.body.sensor-list.type.humidity}">
+    <div class="tooltip tooltip-right" th:data-tip="#{site.body.sensor-list.type.humidity}">
       <div th:replace="~{fragments/icons :: droplets-icon('w-8 h-8 cursor-pointer')}"></div>
     </div>
   </th:block>
   <th:block th:if="${type == 'PROXIMITY'}">
-    <div class="tooltip tooltip-botom" th:data-tip="#{site.body.sensor-list.type.proximity}">
+    <div class="tooltip tooltip-right" th:data-tip="#{site.body.sensor-list.type.proximity}">
       <div th:replace="~{fragments/icons :: radar-icon('w-8 h-8 cursor-pointer')}"></div>
     </div>
   </th:block>
   <th:block th:if="${type == 'ACCELERATION'}">
-    <div class="tooltip tooltip-botom" th:data-tip="#{site.body.sensor-list.type.acceleration}">
+    <div class="tooltip tooltip-right" th:data-tip="#{site.body.sensor-list.type.acceleration}">
       <div th:replace="~{fragments/icons :: gauge-icon('w-8 h-8 cursor-pointer')}"></div>
     </div>
   </th:block>
   <th:block th:if="${type == 'GIROSCOPE'}">
-    <div class="tooltip tooltip-botom" th:data-tip="#{site.body.sensor-list.type.giroscope}">
+    <div class="tooltip tooltip-right" th:data-tip="#{site.body.sensor-list.type.giroscope}">
       <div th:replace="~{fragments/icons :: rotate3d-icon('w-8 h-8 cursor-pointer')}"></div>
     </div>
   </th:block>
   <th:block th:if="${type == 'GAS'}">
-    <div class="tooltip tooltip-botom" th:data-tip="#{site.body.sensor-list.type.gas}">
+    <div class="tooltip tooltip-right" th:data-tip="#{site.body.sensor-list.type.gas}">
       <div th:replace="~{fragments/icons :: cloud-icon('w-8 h-8 cursor-pointer')}"></div>
     </div>
   </th:block>
   <th:block th:if="${type == 'PRESSURE'}">
-    <div class="tooltip tooltip-botom" th:data-tip="#{site.body.sensor-list.type.pressure}">
+    <div class="tooltip tooltip-right" th:data-tip="#{site.body.sensor-list.type.pressure}">
       <div th:replace="~{fragments/icons :: circle-gauge-icon('w-8 h-8 cursor-pointer')}"></div>
     </div>
   </th:block>
   <th:block th:if="${type == 'LEVEL'}">
-    <div class="tooltip tooltip-botom" th:data-tip="#{site.body.sensor-list.type.level}">
+    <div class="tooltip tooltip-right" th:data-tip="#{site.body.sensor-list.type.level}">
       <div th:replace="~{fragments/icons :: cylinder-icon('w-8 h-8 cursor-pointer')}"></div>
     </div>
   </th:block>
   <th:block th:if="${type == 'PHOTOELECTRIC'}">
-    <div class="tooltip tooltip-botom" th:data-tip="#{site.body.sensor-list.type.photoelectric}">
+    <div class="tooltip tooltip-right" th:data-tip="#{site.body.sensor-list.type.photoelectric}">
       <div th:replace="~{fragments/icons :: solar-panel-icon('w-8 h-8 cursor-pointer')}"></div>
+    </div>
+  </th:block>
+  <th:block th:if="${type == 'CUSTOM_INT'}">
+    <div class="tooltip tooltip-right" th:data-tip="#{site.body.sensor-list.type.custom-int}">
+      <div th:replace="~{fragments/icons :: int-icon('w-8 h-8 cursor-pointer')}"></div>
+    </div>
+  </th:block>
+  <th:block th:if="${type == 'CUSTOM_FLOAT'}">
+    <div class="tooltip tooltip-right" th:data-tip="#{site.body.sensor-list.type.custom-float}">
+      <div th:replace="~{fragments/icons :: float-icon('w-8 h-8 cursor-pointer')}"></div>
+    </div>
+  </th:block>
+  <th:block th:if="${type == 'CUSTOM_TEXT'}">
+    <div class="tooltip tooltip-right" th:data-tip="#{site.body.sensor-list.type.custom-text}">
+      <div th:replace="~{fragments/icons :: text-icon('w-8 h-8 cursor-pointer')}"></div>
+    </div>
+  </th:block>
+  <th:block th:if="${type == 'CUSTOM_BOOLEAN'}">
+    <div class="tooltip tooltip-right" th:data-tip="#{site.body.sensor-list.type.custom-bool}">
+      <div th:replace="~{fragments/icons :: bool-icon('w-8 h-8 cursor-pointer')}"></div>
+    </div>
+  </th:block>
+  <th:block th:if="${type == 'CUSTOM_JSON'}">
+    <div class="tooltip tooltip-right" th:data-tip="#{site.body.sensor-list.type.custom-json}">
+      <div th:replace="~{fragments/icons :: json-icon('w-8 h-8 cursor-pointer')}"></div>
     </div>
   </th:block>
 </th:block>
 
 <th:block th:fragment="titled-text(title, text, className)">
-  <div th:class="|flex flex-col justify-start items-start ${className}|">
+  <div th:class="| flex flex-col justify-start items-start ${className} |">
     <span class="text-xs font-bold max-w-[100%]" th:text="${title}"></span>
     <span class="text-sm max-w-[100%]" th:text="${text}"></span>
   </div>
 </th:block>
 
 <th:block th:fragment="titled-expression-code(title, parts, className)">
-  <div th:class="|flex flex-col justify-start items-start overflow-hidden ${className}|">
+  <div th:class="| flex flex-col justify-start items-start overflow-hidden ${className} |">
     <span class="text-xs font-bold max-w-[100%]" th:text="${title}"></span>
     <pre
       class="max-w-[100%] whitespace-pre-wrap"><code><th:block th:each="word : ${parts}"><span th:classappend="${word.matches('\s*(.*\()*(curr|agg|steps|interval|default)((;|,)*)\s*') ? 'code-var' : word.matches('POW|SQRT|MAP|FILTER|ISNULL|TERNARY|IN') ? 'code-func' : word.matches('&quot;.*&quot;') ? 'code-string' : ''}" th:text="${word}"></span></th:block></code></pre>
   </div>
 </th:block>
 
-<th:block th:fragment="interval-item-input(id)">
-  <div class="w-full flex gap-1" th:id="|add-interval-${id}|">
-    <input th:id="|add-interval-input-${id}|" type="number" class="input validator" min="1000" required />
+<th:block th:fragment="interval-item-input">
+  <div class="w-full flex gap-1 add-interval">
+    <input type="number" class="input validator" min="1000" required />
     <button type="button" class="btn btn-ghost">
       <div th:replace="~{fragments/icons :: minus-icon('w-2 h-2')}"></div>
     </button>
+  </div>
+</th:block>
+
+<th:block th:fragment="sensor-form">
+  <form class="fieldset bg-base-200 border-base-300 rounded-box border p-4">
+    <fieldset class="flex justify-between">
+      <div class="text-sm form-title" th:data-add-title="#{site.body.sensor-list.form.add.title}"
+        th:data-edit-title="#{site.body.sensor-list.form.edit.title}"></div>
+      <div class="tooltip tooltip-bottom" th:data-tip="#{site.body.sensor-list.modal.close}">
+        <button type="button" class="btn btn-xs btn-ghost p-0 modal-close">
+          <div th:replace="~{fragments/icons :: x-icon('w-5 h-5')}"></div>
+        </button>
+      </div>
+    </fieldset>
+    <fieldset class="fieldset">
+      <label class="label" for="form-device" th:text="#{site.body.sensor-list.form.device.label}"></label>
+      <input type="text" name="form-device" class="input validator w-[100%] form-device"
+        th:placeholder="#{site.body.sensor-list.form.device.placeholder}" required />
+      <p class="validator-hint hidden" th:text="#{site.body.sensor-list.form.validator.required}"></p>
+    </fieldset>
+    <fieldset class="fieldset">
+      <label class="label" for="form-sensor" th:text="#{site.body.sensor-list.form.sensor.label}"></label>
+      <input type="text" name="form-sensor" class="input validator w-[100%] form-sensor"
+        th:placeholder="#{site.body.sensor-list.form.sensor.placeholder}" required />
+      <p class="validator-hint hidden" th:text="#{site.body.sensor-list.form.validator.required}"></p>
+    </fieldset>
+    <fieldset>
+      <label class="label" for="form-type" th:text="#{site.body.sensor-list.form.type.label}"></label>
+      <select class="select validator w-[100%] form-type" required>
+        <option disabled selected value="" th:text="#{site.body.sensor-list.form.type.placeholder}"></option>
+        <option value="TEMPERATURE" class="flex items-center gap-1" th:text="#{site.body.sensor-list.type.temperature}">
+        </option>
+        <option value="HUMIDITY" class="flex items-center gap-1" th:text="#{site.body.sensor-list.type.humidity}">
+        </option>
+        <option value="PROXIMITY" class="flex items-center gap-1" th:text="#{site.body.sensor-list.type.proximity}">
+        </option>
+        <option value="ACCELERATION" class="flex items-center gap-1"
+          th:text="#{site.body.sensor-list.type.acceleration}"></option>
+        <option value="GIROSCOPE" class="flex items-center gap-1" th:text="#{site.body.sensor-list.type.giroscope}">
+        </option>
+        <option value="GAS" class="flex items-center gap-1" th:text="#{site.body.sensor-list.type.gas}"></option>
+        <option value="PRESSURE" class="flex items-center gap-1" th:text="#{site.body.sensor-list.type.pressure}">
+        </option>
+        <option value="LEVEL" class="flex items-center gap-1" th:text="#{site.body.sensor-list.type.level}"></option>
+        <option value="PHOTOELECTRIC" class="flex items-center gap-1"
+          th:text="#{site.body.sensor-list.type.photoelectric}"></option>
+        <option value="CUSTOM_INT" class="flex items-center gap-1" th:text="#{site.body.sensor-list.type.custom-int}">
+        </option>
+        <option value="CUSTOM_FLOAT" class="flex items-center gap-1"
+          th:text="#{site.body.sensor-list.type.custom-float}"></option>
+        <option value="CUSTOM_TEXT" class="flex items-center gap-1" th:text="#{site.body.sensor-list.type.custom-text}">
+        </option>
+        <option value="CUSTOM_BOOLEAN" class="flex items-center gap-1"
+          th:text="#{site.body.sensor-list.type.custom-bool}"></option>
+        <option value="CUSTOM_JSON" class="flex items-center gap-1" th:text="#{site.body.sensor-list.type.custom-json}">
+        </option>
+      </select>
+      <p class="validator-hint hidden" th:text="#{site.body.sensor-list.form.validator.required}"></p>
+    </fieldset>
+    <fieldset>
+      <label class="label" for="form-defaultvalue" th:text="#{site.body.sensor-list.form.defaultvalue.label}"></label>
+      <input type="text" class="input validator w-[100%] form-defaultvalue"
+        th:placeholder="#{site.body.sensor-list.form.defaultvalue.placeholder}" required />
+      <p class="validator-hint hidden" th:text="#{site.body.sensor-list.form.validator.required}"></p>
+    </fieldset>
+    <fieldset>
+      <label class="label" for="form-magnitude" th:text="#{site.body.sensor-list.form.magnitude.label}"></label>
+      <input type="text" class="input validator w-[100%] form-magnitude"
+        th:placeholder="#{site.body.sensor-list.form.magnitude.placeholder}" required />
+      <p class="validator-hint hidden" th:text="#{site.body.sensor-list.form.validator.required}"></p>
+    </fieldset>
+    <fieldset>
+      <label class="label" for="form-description" th:text="#{site.body.sensor-list.form.description.label}"></label>
+      <textarea class="textarea w-[100%] form-description"
+        th:placeholder="#{site.body.sensor-list.form.description.placeholder}"></textarea>
+      <p class="validator-hint hidden" th:text="#{site.body.sensor-list.form.validator.required}"></p>
+    </fieldset>
+    <fieldset>
+      <label class="label" for="form-agg-expression"
+        th:text="#{site.body.sensor-list.form.agg-expression.label}"></label>
+      <textarea class="textarea validator w-[100%] form-agg-expression"
+        th:placeholder="#{site.body.sensor-list.form.agg-expression.placeholder}" required></textarea>
+      <p class="validator-hint hidden" th:text="#{site.body.sensor-list.form.validator.required}"></p>
+    </fieldset>
+    <fieldset>
+      <label class="label" for="form-flush-expression"
+        th:text="#{site.body.sensor-list.form.flush-expression.label}"></label>
+      <textarea class="textarea w-[100%] form-flush-expression"
+        th:placeholder="#{site.body.sensor-list.form.flush-expression.placeholder}"></textarea>
+    </fieldset>
+    <fieldset>
+      <label class="label" for="form-intervals" th:text="#{site.body.sensor-list.form.intervals.label}"></label>
+      <div class="join w-full flex flex-col form-intervals">
+        <button type="button" class="btn btn-ghost add-interval-btn">
+          <div th:replace="~{fragments/icons :: plus-icon('w-5 h-5')}"></div>
+        </button>
+      </div>
+    </fieldset>
+    <button type="submit" class="btn btn-neutral mt-4" th:data-add-submit="#{site.body.sensor-list.form.add.submit}"
+      th:data-edit-submit="#{site.body.sensor-list.form.edit.submit}"></button>
+  </form>
+</th:block>
+
+<th:block th:fragment="sensor-item(r, i)">
+  <li class="list-row items-center">
+    <div class="flex flex-col justify-start items-start h-full">
+      <div class="flex">
+        <div th:replace="~{fragments/components :: sensor-icon(${r.sensorType().name()})}"></div>
+        <span class="text-xs max-w-8 w-8 text-ellipsis whitespace-nowrap overflow-hidden self-end"
+          th:text="${r.magnitude}"></span>
+      </div>
+    </div>
+    <div th:class="| grid grid-cols-1 md:grid-cols-3 gap-4 sensor-${i} |" th:data-device="${r.device}"
+      th:data-sensor="${r.sensor}" th:data-agg-expression="${r.aggregationExpression}"
+      th:data-flush-expression="${r.flushExpression}" th:data-defaultvalue="${r.defaultValue}"
+      th:data-intervals="${r.intervals}" th:data-sensortype="${r.sensorType}" th:data-magnitude="${r.magnitude}"
+      th:data-description="${r.description}">
+      <th:block
+        th:replace="~{fragments/components :: titled-text(#{site.body.sensor-list.description.device}, ${r.device}, '')}">
+      </th:block>
+      <th:block
+        th:replace="~{fragments/components :: titled-text(#{site.body.sensor-list.description.sensor}, ${r.sensor}, '')}">
+      </th:block>
+      <th:block
+        th:replace="~{fragments/components :: titled-text(#{site.body.sensor-list.description.title}, ${r.description}, '')}">
+      </th:block>
+      <th:block
+        th:replace="~{fragments/components :: titled-expression-code(#{site.body.sensor-list.aggregation-expression.title}, ${r.getAggregationExpressionParts()}, '')}">
+      </th:block>
+      <th:block
+        th:replace="~{fragments/components :: titled-expression-code(#{site.body.sensor-list.flush-expression.title}, ${r.getFlushExpressionParts()}, 'md:col-span-2')}">
+      </th:block>
+    </div>
+    <div class="flex flex-col justify-start items-start h-full">
+      <div class="tooltip tooltip-left" th:data-tip="#{site.body.sensor-list.actions.edit}">
+        <button type="button" th:class="| btn btn-ghost edit-sensor-${i} |">
+          <div th:replace="~{fragments/icons :: pencil-icon('w-5 h-5')}"></div>
+        </button>
+      </div>
+      <div class="tooltip tooltip-left" th:data-tip="#{site.body.sensor-list.actions.delete}">
+        <button type="button" th:class="| btn btn-ghost delete-sensor-${i} |">
+          <div th:replace="~{fragments/icons :: trash-icon('w-5 h-5')}"></div>
+        </button>
+      </div>
+    </div>
+  </li>
+</th:block>
+
+<th:block th:fragment="toast(type, msg)">
+  <div th:class="| alert alert-${type} |">
+    <span th:text="#{__${msg}__}"></span>
   </div>
 </th:block>

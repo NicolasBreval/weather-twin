@@ -60,6 +60,24 @@ public class DebugInitializer implements CommandLineRunner {
           "TERNARY(steps <= 1, default, agg / (steps - 1));",
           Set.of(5000L, 10000L), SensorType.PHOTOELECTRIC, "%", "Sensor which measures the light intensity");
 
+      sensorConfiguration.registerSensor("my-device", "custom-int-ext", "0", "agg + curr;",
+          "TERNARY(steps <= 1, default, agg / (steps - 1));",
+          Set.of(5000L, 10000L), SensorType.CUSTOM_INT, "N/A", "Sensor which measures an integer value");
+
+      sensorConfiguration.registerSensor("my-device", "custom-float-ext", "0.0", "agg + curr;",
+          "TERNARY(steps <= 1, default, agg / (steps - 1));",
+          Set.of(5000L, 10000L), SensorType.CUSTOM_FLOAT, "N/A", "Sensor which measures an float value");
+
+      sensorConfiguration.registerSensor("my-device", "custom-text-ext", "\"\"",
+          "agg + curr;", "", Set.of(5000L, 10000L), SensorType.CUSTOM_TEXT, "N/A",
+          "Sensor which measures a text value");
+
+      sensorConfiguration.registerSensor("my-device", "custom-bool-ext", "true", "agg & curr;",
+          null, Set.of(5000L, 10000L), SensorType.CUSTOM_BOOLEAN, "N/A", "Sensor which measures a boolean value");
+
+      sensorConfiguration.registerSensor("my-device", "custom-json-ext", "{}",
+          "agg & curr;", "", Set.of(5000L, 10000L), SensorType.CUSTOM_JSON, "N/A",
+          "Sensor which measures a JSON value");
     }
   }
 

@@ -2,7 +2,6 @@ package org.nbreval.weather_twin.gateway.application.service;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -12,6 +11,7 @@ import org.nbreval.weather_twin.gateway.application.enumeration.SensorType;
 import org.nbreval.weather_twin.gateway.application.port.in.SensorConfigurationPort;
 import org.nbreval.weather_twin.gateway.application.port.out.AggregationsDbPort;
 import org.nbreval.weather_twin.gateway.application.port.out.ExpressionsDbPort;
+import org.nbreval.weather_twin.gateway.application.port.out.MeasureProcessorPort;
 import org.nbreval.weather_twin.gateway.application.port.out.SensorMetadataDbPort;
 import org.nbreval.weather_twin.gateway.infrastructure.exception.AlreadyExistsException;
 import org.nbreval.weather_twin.gateway.infrastructure.exception.NotExistsException;
@@ -42,11 +42,17 @@ public class SensorConfigurationService implements SensorConfigurationPort {
    */
   private final SensorMetadataDbPort sensorMetadataDB;
 
+  /**
+   * Allows to check expressions before to insert them.
+   */
+  private final MeasureProcessorPort measureProcessor;
+
   public SensorConfigurationService(AggregationsDbPort aggregationsDB, ExpressionsDbPort expressionsDB,
-      SensorMetadataDbPort sensorMetadabaDB) {
+      SensorMetadataDbPort sensorMetadabaDB, MeasureProcessorPort measureProcessor) {
     this.aggregationsDB = aggregationsDB;
     this.expressionsDB = expressionsDB;
     this.sensorMetadataDB = sensorMetadabaDB;
+    this.measureProcessor = measureProcessor;
   }
 
   @Override
@@ -58,6 +64,19 @@ public class SensorConfigurationService implements SensorConfigurationPort {
     if (!aggregationsDB.getAggregations(device, sensor).isEmpty())
       throw new AlreadyExistsException(
           "Already exists a registration for '%s.%s'".formatted(device, sensor));
+
+    // Check if expressions are valid
+    if (!measureProcessor.checkExpression(aggregationExpression)) {
+      throw new IllegalArgumentException("Aggregation expression not valid '%s'".formatted(aggregationExpression));
+    }
+
+    if (flushExpression != null && !flushExpression.isBlank() && !measureProcessor.checkExpression(flushExpression)) {
+      throw new IllegalArgumentException("Flush expression not valid '%s'".formatted(flushExpression));
+    }
+
+    if (intervals.stream().anyMatch(i -> i < 1000)) {
+      throw new IllegalArgumentException("Invalid interval '%d'; an interval must be greater than 1000 milliseconds ");
+    }
 
     // Register expressions
     expressionsDB.setAggregatorExpression(device, sensor, aggregationExpression);
@@ -127,48 +146,29 @@ public class SensorConfigurationService implements SensorConfigurationPort {
   }
 
   @Override
-  public void updateAggregationExpression(String device, String sensor, String expression) {
-    expressionsDB.setAggregatorExpression(device, sensor, expression);
-    aggregationsDB.getRegisteredIntervals(device, sensor)
-        .forEach(interval -> aggregationsDB.releaseAggregation(device, sensor, interval));
-  }
+  public void updateSensor(String device, String sensor, String aggregationExpression, String flushExpression,
+      String defaultValue, Set<Long> intervals, SensorType sensorType, String magnitude, String description) {
 
-  @Override
-  public void updateFlushExpression(String device, String sensor, String expression) {
-    expressionsDB.setFlushExpression(device, sensor, expression);
-  }
-
-  @Override
-  public Tuple2<List<Long>, List<Long>> updateIntervals(String device, String sensor, Set<Long> intervals) {
-    var currentIntervals = aggregationsDB.getRegisteredIntervals(device, sensor);
-
-    if (currentIntervals.isEmpty()) {
+    if (aggregationsDB.getAggregations(device, sensor).isEmpty())
       throw new NotExistsException(
-          "Doesn't exist a registration for '%s.%s".formatted(device, sensor));
+          "Doesn't exist a registration for '%s.%s'".formatted(device, sensor));
+
+    if (!measureProcessor.checkExpression(aggregationExpression)) {
+      throw new IllegalArgumentException("Aggregation expression not valid '%s'".formatted(aggregationExpression));
     }
 
-    var intervalsToAdd = intervals.stream().filter(i -> !currentIntervals.contains(i)).toList();
-    var intervalsToDelete = currentIntervals.stream().filter(i -> !intervals.contains(i)).toList();
+    if (flushExpression != null && !flushExpression.isBlank() && !measureProcessor.checkExpression(flushExpression)) {
+      throw new IllegalArgumentException("Flush expression not valid '%s'".formatted(flushExpression));
+    }
 
-    var storedDefaultValue = aggregationsDB.getAggregation(device, sensor, intervalsToDelete.get(0));
+    if (intervals.stream().anyMatch(i -> i < 1000)) {
+      throw new IllegalArgumentException("Invalid interval '%d'; an interval must be greater than 1000 milliseconds ");
+    }
 
-    // Remove registration of intervals not present in update dto and currently
-    // registered
-    intervalsToDelete.forEach(interval -> aggregationsDB.unregisterAggregation(device, sensor, interval));
+    sensorMetadataDB.addMetadata(device, sensor, sensorType, magnitude, description);
 
-    // Add new intervals
-    intervalsToAdd
-        .forEach(interval -> aggregationsDB.registerAggregation(device, sensor, interval, storedDefaultValue.dataType(),
-            storedDefaultValue.value()));
-
-    aggregationsDB.applyChanges();
-
-    var intervalsToUnschedule = intervalsToDelete.stream()
-        .filter(i -> aggregationsDB.getAggregationsByInterval(i).isEmpty()).toList();
-    var intervalsToSchedule = intervalsToAdd.stream().filter(i -> aggregationsDB.getAggregationsByInterval(i).isEmpty())
-        .toList();
-
-    return Tuples.of(intervalsToUnschedule, intervalsToSchedule);
+    aggregationsDB.getAggregations(device, sensor).entrySet()
+        .forEach(entry -> aggregationsDB.releaseAggregation(device, sensor, entry.getKey()));
   }
 
   @Override
@@ -197,6 +197,19 @@ public class SensorConfigurationService implements SensorConfigurationPort {
         })));
 
     return byDeviceAndSensor.values();
+  }
+
+  @Override
+  public SensorRegistration getSensorRegistration(String device, String sensor) {
+    var aggregations = aggregationsDB.getAggregations(device, sensor);
+    var aggExpression = expressionsDB.getAggregatorExpression(device, sensor);
+    var flushExpression = expressionsDB.getFlushExpression(device, sensor);
+    var metadata = sensorMetadataDB.getMetadata(device, sensor);
+    var intervals = aggregations.keySet();
+    var defaultValue = aggregations.values().stream().toList().get(0).defaultValue().toString();
+
+    return new SensorRegistration(device, sensor, aggExpression, flushExpression, defaultValue, intervals,
+        metadata.type(), metadata.magnitude(), metadata.description());
   }
 
 }

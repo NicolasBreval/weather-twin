@@ -55,10 +55,7 @@ json_array
     ;
 
 json_value
-    : atom
-    | json_object
-    | json_array
-    ;
+    : expression;
 
 //#endregion
 

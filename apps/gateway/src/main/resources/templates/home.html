@@ -6,12 +6,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title th:text="#{site.title}">Weather-Twin Gateway Admin Console</title>
   <link rel="stylesheet" th:href="@{/css/tailwind.css}">
+  <script th:src="@{/js/toast.js}"></script>
   <script th:src="@{/js/theme.js}"></script>
   <script th:src="@{/js/status.js}"></script>
   <script th:src="@{/js/actions.js}"></script>
 </head>
 
 <body class="h-screen">
+  <div class="toast toast-end z-999"></div>
+
   <div class="navbar bg-base-100 shadow-lg sticky">
     <div class="flex-1 flex gap-3 justify-start items-center">
       <span class="text-xl font-bold" th:text="#{site.header.title}">Weather-Twin Gateway Admin Console</span>
@@ -25,7 +28,7 @@
     </div>
     <div class="flex-none">
       <label class="swap swap-rotate">
-        <input id="theme-controller" type="checkbox" class="theme-controller" value="dark" />
+        <input type="checkbox" class="theme-controller" value="dark" />
         <div th:replace="~{fragments/icons :: sun-icon('swap-off w-8 h-8')}"></div>
         <div th:replace="~{fragments/icons :: moon-icon('swap-on w-8 h-8')}"></div>
       </label>
@@ -66,153 +69,28 @@
     <div class="join join-vertical bg-base-100 w-full">
       <details class="collapse collapse-arrow join-item border-base-300 border" name="sections">
         <summary class="collapse-title font-semibold" th:text="#{site.body.sensor-list.title}"></summary>
-        <ul class="collapse-content list bg-base-100 rounded-box shadow-lg">
+        <ul class="collapse-content list bg-base-100 rounded-box shadow-lg sensor-list">
           <li class="flex gap-2 justify-between items-center p-2">
             <span class="p-4 pb-2 text-xs opacity-60 tracking-wide" th:text="#{site.body.sensor-list.top}"></span>
             <div class="tooltip tooltip-bottom" th:data-tip="#{site.body.sensor-list.actions.add}">
-              <button type="button" class="btn btn-ghost" id="add-sensor-btn">
+              <button type="button" class="btn btn-ghost add-sensor-btn">
                 <div th:replace="~{fragments/icons :: plus-icon('w-5 h-5')}"></div>
               </button>
             </div>
           </li>
 
-          <th:block th:each="r: ${registrations}">
-            <li class="list-row items-center">
-              <div class="flex flex-col justify-start items-start h-full">
-                <div class="flex">
-                  <div th:replace="~{fragments/components :: sensor-icon(${r.sensorType().name()})}"></div>
-                  <span class="text-xs max-w-8 w-8 text-ellipsis whitespace-nowrap overflow-hidden self-end"
-                    th:text="${r.magnitude}"></span>
-                </div>
-              </div>
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <th:block
-                  th:replace="~{fragments/components :: titled-text(#{site.body.sensor-list.description.device}, ${r.device}, '')}">
-                </th:block>
-                <th:block
-                  th:replace="~{fragments/components :: titled-text(#{site.body.sensor-list.description.sensor}, ${r.sensor}, '')}">
-                </th:block>
-                <th:block
-                  th:replace="~{fragments/components :: titled-text(#{site.body.sensor-list.description.title}, ${r.description}, '')}">
-                </th:block>
-                <th:block
-                  th:replace="~{fragments/components :: titled-expression-code(#{site.body.sensor-list.aggregation-expression.title}, ${r.getAggregationExpressionParts()}, '')}">
-                </th:block>
-                <th:block
-                  th:replace="~{fragments/components :: titled-expression-code(#{site.body.sensor-list.flush-expression.title}, ${r.getFlushExpressionParts()}, 'md:col-span-2')}">
-                </th:block>
-              </div>
-              <div class="flex flex-col justify-start items-start h-full">
-                <div class="tooltip tooltip-bottom" th:data-tip="#{site.body.sensor-list.actions.edit}">
-                  <button type="button" class="btn btn-ghost">
-                    <div th:replace="~{fragments/icons :: pencil-icon('w-5 h-5')}"></div>
-                  </button>
-                </div>
-              </div>
-            </li>
+          <th:block th:each="r, i: ${registrations}">
+            <th:block th:replace="~{fragments/components :: sensor-item(${r}, ${i.count})}">
+            </th:block>
           </th:block>
         </ul>
       </details>
     </div>
   </div>
 
-  <dialog class="left-[50%] -translate-x-[50%] top-[2.5%] bg-transparent max-h-[95dvh]" id="form-dialog">
-    <form class="fieldset bg-base-200 border-base-300 rounded-box border p-4">
-      <fieldset class="flex justify-between">
-        <div class="text-sm" th:text="#{site.body.sensor-list.form.add.title}"></div>
-        <div class="tooltip tooltip-bottom" th:data-tip="#{site.body.sensor-list.modal.close}">
-          <button type="button" class="btn btn-xs btn-ghost p-0" id="modal-close">
-            <div th:replace="~{fragments/icons :: x-icon('w-5 h-5')}"></div>
-          </button>
-        </div>
-      </fieldset>
-      <fieldset class="fieldset">
-        <label class="label" for="form-device" th:text="#{site.body.sensor-list.form.device.label}"></label>
-        <input type="text" id="form-device" name="form-device" class="input validator w-[100%]"
-          th:placeholder="#{site.body.sensor-list.form.device.placeholder}" required />
-        <p class="validator-hint hidden" th:text="#{site.body.sensor-list.form.validator.required}"></p>
-      </fieldset>
-      <fieldset class="fieldset">
-        <label class="label" for="form-sensor" th:text="#{site.body.sensor-list.form.sensor.label}"></label>
-        <input type="text" id="form-sensor" name="form-sensor" class="input validator w-[100%]"
-          th:placeholder="#{site.body.sensor-list.form.sensor.placeholder}" required />
-        <p class="validator-hint hidden" th:text="#{site.body.sensor-list.form.validator.required}"></p>
-      </fieldset>
-      <fieldset>
-        <label class="label" for="form-type" th:text="#{site.body.sensor-list.form.type.label}"></label>
-        <select id="form-type" class="select validator w-[100%]" required>
-          <option disabled selected value="" th:text="#{site.body.sensor-list.form.type.placeholder}"></option>
-          <option value="TEMPERATURE" class="flex items-center gap-1"
-            th:text="#{site.body.sensor-list.type.temperature}"></option>
-          <option value="HUMIDITY" class="flex items-center gap-1" th:text="#{site.body.sensor-list.type.humidity}">
-          </option>
-          <option value="PROXIMITY" class="flex items-center gap-1" th:text="#{site.body.sensor-list.type.proximity}">
-          </option>
-          <option value="ACCELERATION" class="flex items-center gap-1"
-            th:text="#{site.body.sensor-list.type.acceleration}"></option>
-          <option value="GIROSCOPE" class="flex items-center gap-1" th:text="#{site.body.sensor-list.type.giroscope}">
-          </option>
-          <option value="GAS" class="flex items-center gap-1" th:text="#{site.body.sensor-list.type.gas}"></option>
-          <option value="PRESSURE" class="flex items-center gap-1" th:text="#{site.body.sensor-list.type.pressure}">
-          </option>
-          <option value="LEVEL" class="flex items-center gap-1" th:text="#{site.body.sensor-list.type.level}"></option>
-          <option value="PHOTOELECTRIC" class="flex items-center gap-1"
-            th:text="#{site.body.sensor-list.type.photoelectric}"></option>
-          <option value="CUSTOM_INT" class="flex items-center gap-1" th:text="#{site.body.sensor-list.type.custom-int}">
-          </option>
-          <option value="CUSTOM_FLOAT" class="flex items-center gap-1"
-            th:text="#{site.body.sensor-list.type.custom-float}"></option>
-          <option value="CUSTOM_TEXT" class="flex items-center gap-1"
-            th:text="#{site.body.sensor-list.type.custom-text}"></option>
-          <option value="CUSTOM_BOOLEAN" class="flex items-center gap-1"
-            th:text="#{site.body.sensor-list.type.custom-bool}"></option>
-          <option value="CUSTOM_JSON" class="flex items-center gap-1"
-            th:text="#{site.body.sensor-list.type.custom-json}"></option>
-        </select>
-        <p class="validator-hint hidden" th:text="#{site.body.sensor-list.form.validator.required}"></p>
-      </fieldset>
-      <fieldset>
-        <label class="label" for="form-defaultvalue" th:text="#{site.body.sensor-list.form.defaultvalue.label}"></label>
-        <input id="form-defaultvalue" type="text" class="input validator w-[100%]"
-          th:placeholder="#{site.body.sensor-list.form.defaultvalue.placeholder}" required />
-        <p class="validator-hint hidden" th:text="#{site.body.sensor-list.form.validator.required}"></p>
-      </fieldset>
-      <fieldset>
-        <label class="label" for="form-magnitude" th:text="#{site.body.sensor-list.form.magnitude.label}"></label>
-        <input id="form-magnitude" type="text" class="input validator w-[100%]"
-          th:placeholder="#{site.body.sensor-list.form.magnitude.placeholder}" required />
-        <p class="validator-hint hidden" th:text="#{site.body.sensor-list.form.validator.required}"></p>
-      </fieldset>
-      <fieldset>
-        <label class="label" for="form-description" th:text="#{site.body.sensor-list.form.description.label}"></label>
-        <textarea id="form-description" class="textarea w-[100%]"
-          th:placeholder="#{site.body.sensor-list.form.description.placeholder}"></textarea>
-        <p class="validator-hint hidden" th:text="#{site.body.sensor-list.form.validator.required}"></p>
-      </fieldset>
-      <fieldset>
-        <label class="label" for="form-agg-expression"
-          th:text="#{site.body.sensor-list.form.agg-expression.label}"></label>
-        <textarea id="form-agg-expression" class="textarea validator w-[100%]"
-          th:placeholder="#{site.body.sensor-list.form.agg-expression.placeholder}" required></textarea>
-        <p class="validator-hint hidden" th:text="#{site.body.sensor-list.form.validator.required}"></p>
-      </fieldset>
-      <fieldset>
-        <label class="label" for="form-flush-expression"
-          th:text="#{site.body.sensor-list.form.flush-expression.label}"></label>
-        <textarea id="form-flush-expression" class="textarea w-[100%]"
-          th:placeholder="#{site.body.sensor-list.form.flush-expression.placeholder}"></textarea>
-      </fieldset>
-      <fieldset>
-        <label class="label" for="form-intervals" th:text="#{site.body.sensor-list.form.intervals.label}"></label>
-        <div class="join w-full flex flex-col" id="form-intervals">
-          <button id="add-interval-btn" type="button" class="btn btn-ghost">
-            <div th:replace="~{fragments/icons :: plus-icon('w-5 h-5')}"></div>
-          </button>
-        </div>
-      </fieldset>
-      <button id="form-submit" type="submit" class="btn btn-neutral mt-4"
-        th:text="#{site.body.sensor-list.form.add.submit}"></button>
-    </form>
+  <dialog class="left-[50%] -translate-x-[50%] top-[2.5%] bg-transparent max-h-[95dvh] sensor-form-dialog">
+    <th:block th:replace="~{fragments/components :: sensor-form}">
+    </th:block>
   </dialog>
 </body>
 

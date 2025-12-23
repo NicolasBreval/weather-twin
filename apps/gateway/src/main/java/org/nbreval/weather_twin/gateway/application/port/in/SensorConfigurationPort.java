@@ -1,13 +1,10 @@
 package org.nbreval.weather_twin.gateway.application.port.in;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 
 import org.nbreval.weather_twin.gateway.application.entity.SensorRegistration;
 import org.nbreval.weather_twin.gateway.application.enumeration.SensorType;
-
-import reactor.util.function.Tuple2;
 
 /**
  * Defines the entity used to configure some aspects related to a sensor in the
@@ -71,37 +68,20 @@ public interface SensorConfigurationPort {
   boolean unregisterSensor(String device, String sensor, long interval);
 
   /**
-   * Updates the WTAL aggregation expression related to sensor.
+   * Updates some information about a registered sensor
    * 
-   * @param device     Device related to sensor.
-   * @param sensor     Sensor to update its aggregation expression.
-   * @param expression Expression to update.
+   * @param device                Device of sensor to update.
+   * @param sensor                Name of sensor to update.
+   * @param aggregationExpression New aggregation expression.
+   * @param flushExpression       New flushExpression.
+   * @param defaultValue          New default value.
+   * @param intervals             New set of intervals.
+   * @param sensorType            New sensor type.
+   * @param magnitude             New magnitude.
+   * @param description           New description.
    */
-  void updateAggregationExpression(String device, String sensor, String expression);
-
-  /**
-   * Updates the WTAL flush expression related to sensor.
-   * 
-   * @param device     Device related to sensor.
-   * @param sensor     Sensor to update its flush expression.
-   * @param expression Expression to update.
-   */
-  void updateFlushExpression(String device, String sensor, String expression);
-
-  /**
-   * Updates the intervals related to sensor. The input list defines the intervals
-   * that will persists after the method is applied. So, the previous intervals
-   * not included in input list will be removed.
-   * 
-   * @param device    Device related to sensor.
-   * @param sensor    Sensor to update its intervals.
-   * @param intervals List of intervals to update.
-   * @return A tuple with two lists of intervals; first one is the list of
-   *         intervals which requires to remove the schedulers related to them,
-   *         and the second one are the intervals which requires to create new
-   *         schedulers for them.
-   */
-  Tuple2<List<Long>, List<Long>> updateIntervals(String device, String sensor, Set<Long> intervals);
+  void updateSensor(String device, String sensor, String aggregationExpression, String flushExpression,
+      String defaultValue, Set<Long> intervals, SensorType sensorType, String magnitude, String description);
 
   /**
    * Obtains all aggregations stored on system.
@@ -110,4 +90,14 @@ public interface SensorConfigurationPort {
    *         sensor
    */
   Collection<SensorRegistration> getAllRegistrations();
+
+  /**
+   * Obtain a sensor registratio by its name and device.
+   * 
+   * @param device Device related to sensor registration to obtain.
+   * @param sensor Sensor to obtain.
+   * @return Sensor registration related by device and sensor passed by
+   *         parameters.
+   */
+  SensorRegistration getSensorRegistration(String device, String sensor);
 }

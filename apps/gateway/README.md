@@ -213,6 +213,7 @@ graph LR
     SCS --> SMDA
     WA --> LA
     WA --> TA
+    SCS --> MPP
 ```
 
 ## 🈺 Weather-Twin Aggregation Language

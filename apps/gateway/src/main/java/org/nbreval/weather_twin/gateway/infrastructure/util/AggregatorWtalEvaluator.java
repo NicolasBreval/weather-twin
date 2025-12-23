@@ -42,8 +42,12 @@ import org.nbreval.weather_twin.gateway.infrastructure.util.wtal.AggregatorWtalP
 import org.nbreval.weather_twin.gateway.infrastructure.util.wtal.AggregatorWtalParser.StartContext;
 import org.nbreval.weather_twin.gateway.infrastructure.util.wtal.AggregatorWtalParser.TernaryFunctionContext;
 import org.nbreval.weather_twin.gateway.infrastructure.util.wtal.AggregatorWtalParser.UnaryMinusContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AggregatorWtalEvaluator extends AggregatorWtalBaseVisitor<Object> {
+  private static final Logger logger = LoggerFactory.getLogger(AggregatorWtalEvaluator.class);
+
   private final Map<String, Object> variableContext;
 
   private final WTALLogicPort wtalLogicPort;
@@ -71,6 +75,26 @@ public class AggregatorWtalEvaluator extends AggregatorWtalBaseVisitor<Object> {
     }
 
     return this.visit(tree);
+  }
+
+  public boolean checkSyntax(String expression) {
+    var stream = CharStreams.fromString(expression);
+    var lexer = new AggregatorWtalLexer(stream);
+    var tokens = new CommonTokenStream(lexer);
+
+    var parser = new AggregatorWtalParser(tokens);
+
+    var errorListener = new AggregatorWtalErrorListener();
+    parser.removeErrorListeners();
+    parser.addErrorListener(errorListener);
+
+    parser.start();
+
+    if (errorListener.hasErrors()) {
+      logger.error("Expression '%s' not valid:%n'%s'".formatted(expression, errorListener.getErrors()));
+    }
+
+    return !errorListener.hasErrors();
   }
 
   @Override
@@ -155,7 +179,7 @@ public class AggregatorWtalEvaluator extends AggregatorWtalBaseVisitor<Object> {
 
   @Override
   public JsonValue<?> visitJson_value(Json_valueContext ctx) {
-    return new JsonValue<>(visit(ctx.atom()));
+    return new JsonValue<>(visit(ctx.expression()));
   }
 
   @Override
